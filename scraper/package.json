@@ -1,0 +1,17 @@
+{
+  "name": "ufo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scrape.js",
+  "scripts": {
+    "install": "npm run download",
+    "download": "node scrape.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "node-fetch": "^2.6.1",
+    "node-html-parser": "^2.0.0"
+  }
+}
