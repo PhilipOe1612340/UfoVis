@@ -63,11 +63,6 @@ function convertDataPoint(data) {
     return;
   }
   const queryName = data.City.toLocaleLowerCase().replace(/\s*\(.*\)$/, "");
-  if (queryName.match(/\d/gm)) {
-    //   TODO: convert dms to lat/long
-    DEBUG && console.log("found dms", queryName);
-    return;
-  }
 
   const city = cities.find((c) => queryName === c.city);
   if (!city) {
