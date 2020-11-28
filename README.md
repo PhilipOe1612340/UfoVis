@@ -6,7 +6,7 @@ Project for GeoVis WS 2020
 
 ### Download data:
 ```bash
-cd scraper
+cd database/preprocessing/scraper
 npm install
 ```
 
