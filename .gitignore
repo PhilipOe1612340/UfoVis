@@ -1,2 +1,6 @@
-data
+/database/preprocessing/ufodata/*.csv
 node_modules
+debug.html
+backend/src/__pycache__/
+
+database/preprocessing/converted.csv

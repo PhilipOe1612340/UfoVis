@@ -78,7 +78,7 @@ const pages = [
   "ndxlYT",
 ];
 
-const outputDir = "../data";
+const outputDir = "../ufodata";
 
 async function getDataSet() {
   if (!(await exists(outputDir))) {
@@ -109,21 +109,13 @@ async function getDataSet() {
 
     // get table headers
     const ths = document.querySelectorAll("th");
-    const header = ths.map((row) => row.innerText);
-
-    const csvWriter = createCsvWriter({
-      path,
-      header: header.map((h, id) => ({ id: "data" + id, title: h })),
-    });
+    const csvWriter = createCsvWriter({ path, header: ths.map((row) => row.innerText).map((h, id) => ({ id: "data" + id, title: h })) });
 
     // transform data
     const trs = document.querySelectorAll("tr").slice(1);
     const records = trs.map((row) => {
       const record = {};
-      row.childNodes
-        .map((n) => n.innerText)
-        .filter((t) => t.replace(/\r\n/g, "").length > 0)
-        .forEach((text, id) => (record["data" + id] = text));
+      row.childNodes.map((n) => n.innerText.replace(/\r\n/gm, "")).forEach((text, id) => (record["data" + id] = text));
 
       return record;
     });
