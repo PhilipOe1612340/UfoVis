@@ -115,7 +115,11 @@ async function getDataSet() {
     const trs = document.querySelectorAll("tr").slice(1);
     const records = trs.map((row) => {
       const record = {};
-      row.childNodes.map((n) => n.innerText.replace(/\r\n/gm, "")).forEach((text, id) => (record["data" + id] = text));
+      row.childNodes
+        .filter((n) => n.innerText !== "\r\n")
+        .map((n) => n.innerText.replace(/\r\n/gm, ""))
+        .slice(0, 7)
+        .forEach((text, id) => (record["data" + id] = text));
 
       return record;
     });
