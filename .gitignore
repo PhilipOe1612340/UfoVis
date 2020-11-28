@@ -4,3 +4,4 @@ debug.html
 backend/src/__pycache__/
 
 database/preprocessing/converted.csv
+database/preprocessing/converted.geo.json

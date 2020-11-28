@@ -1,7 +1,7 @@
 // @ts-check
 const csv = require("csv-parser");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const { readdir } = require("fs").promises;
+const { readdir, writeFile } = require("fs").promises;
 const { createReadStream, accessSync } = require("fs");
 const { join } = require("path");
 
@@ -10,19 +10,8 @@ const DEBUG = false;
 /** @type {{city: string, lat: string, lng: string, iso3:string}[]} */
 const cities = [];
 const inputDir = join(__dirname, "../ufodata");
-const outputFile = join(__dirname, "../converted.csv");
+const outputFile = join(__dirname, "../converted");
 let notFound = 0;
-
-let fileExists = false;
-try {
-  accessSync(outputFile);
-  fileExists = true;
-} catch {}
-
-if (fileExists && !DEBUG) {
-  console.log("conversion already done");
-  process.exit(0);
-}
 
 console.log("reading cities");
 createReadStream(join(__dirname, "worldcities.csv"))
@@ -49,9 +38,27 @@ async function getLocation() {
         .on("end", res);
     });
   }
+
+  // write geojson sample
+  const geoString = converted
+    .filter(() => Math.random() > 0.95)
+    .slice(0, 1000)
+    .filter((c) => !!c.Shape)
+    .map((c) => JSON.stringify(new Point(c)))
+    .join(", ");
+
+  const geojson = `{
+    "name": "NewFeatureType",
+    "type": "FeatureCollection",
+    "features": [${geoString}]
+  }`;
+
+  await writeFile(outputFile + ".geo.json", geojson);
+
+  // write csv
   console.log("found:", converted.length, "not found:", notFound, `(${~~((notFound / (converted.length + notFound)) * 100)}%)`);
   console.log("... saving");
-  const csvWriter = createCsvWriter({ path: outputFile, header: Object.keys(converted[0]).map((h, id) => ({ id: h, title: h })) });
+  const csvWriter = createCsvWriter({ path: outputFile + '.csv', header: Object.keys(converted[0]).map((h, id) => ({ id: h, title: h })) });
   csvWriter.writeRecords(converted);
 }
 
@@ -74,4 +81,20 @@ function convertDataPoint(data) {
   data.Lat = city.lat;
   data.Lng = city.lng;
   return data;
+}
+
+class Point {
+  /**
+   * @param {{'Date / Time': string, City: string, State: string, Shape: string, Duration: string, Summary: string, Posted: string, Lat: string, Lng: string,}} record
+   */
+  constructor(record) {
+    this.type = "Feature";
+    this.geometry = {
+      type: "Point",
+      coordinates: [record.Lng, record.Lat].map(parseFloat),
+    };
+    this.properties = {
+      shape: record.Shape,
+    };
+  }
 }
