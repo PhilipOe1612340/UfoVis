@@ -5,3 +5,9 @@ backend/src/__pycache__/
 
 database/preprocessing/converted.csv
 database/preprocessing/converted.geo.json
+
+doc/projectProposal.aux
+doc/projectProposal.fdb_latexmk
+doc/projectProposal.fls
+doc/projectProposal.log
+doc/projectProposal.synctex.gz
