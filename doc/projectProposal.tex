@@ -1,0 +1,79 @@
+\documentclass{scrartcl}
+%\documentclass{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage[ngerman]{babel}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{longtable, booktabs}
+\usepackage{hyperref}
+
+
+
+% Further Options
+\setcounter{secnumdepth}{0}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[RO, RE]{Project Proposal}
+\fancyhead[C]{Group 6}
+\fancyhead[LO, LE]{Philip, Robin, Marius}
+
+
+\title{\textsc{Geographic Information Systems} \\ 
+        Project Proposal}
+
+\author{ 
+    Philip Oesterlin \\
+    Robin Gerling \\
+    Marius Hahn \\ 
+       }
+%\date{2019-10-26}
+\begin{document}
+\maketitle
+\newpage
+
+\section{Intro - Motivation}
+There is a well maintained dataset with about 90.000 entries of people reporting UFO
+sightings from the \href{http://www.nuforc.org/}{national ufo reporting center}. The dataset is not very accessible
+though. There is no map that could display information like for example where in the
+world a specific shape is reported from the most. This information will not uncover any
+real world information about UFOs but it might be fun and interesting to explore.
+
+\section{\href{http://www.nuforc.org/webreports/ndxevent.html}{Dataset}}
+The data is displayed as a table in HTML format. The entries all contain a small description,
+the location of the sighting and even a row about the reported shape of the UFO.
+The table does not include coordinates only the name of the city it was reported in.
+The HTML also looks a little funky so it will have to be heavily preprocessed.
+
+
+\section{Methologie}
+\begin{itemize}
+        \item parse and preprocess the data, find locations to display on a map, identify the most popular shapes.
+        \item display the data using a hexagonal binning approach or a heatmap
+        \item allow the use of a time slider to explore the data
+        \item show some information about possible sources of UFO confusion like Airports
+        \item filters for shape and duration
+        \item use image substraction to see if there was a shift in areas that have frequent sightings.
+\end{itemize}
+
+\section{System}
+In the exercise there was a joke about how maps without proper normalisation to scale the data to
+the number of inhabitants would just end up being a map about where most people live. We will
+probably not be able to normalise the data and it might not make too much sense in this case
+anyway. Rather it would be interesting to explore how we can display the data faithfully using
+a heatmap with the colors of the most popular shape in the area. However we are worried about
+most points falling on top of big cities. Since the spatial resolution will only be on the level
+of cities this might be a problem.
+
+
+\section{Use Case}
+Fun, Exploration: being able to see the data on a map will probably be fun and you can hopefully identify meaningful trends in the data. For example trends where, after a popular movie comes out, the shape of the ufo sightings change since people might be influenced by the media they consume.
+
+Finding explanations for the sightings: Maybe there will be some pattern in the data allowing you to get insight into what caused some of the sightings. For example it could be that there are more cases next to cities with big airports or something like that.
+
+\end{document}
