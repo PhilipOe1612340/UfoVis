@@ -6,7 +6,7 @@
   "scripts": {
     "install": "npm run download && npm run convert",
     "download": "node scrape.js",
-    "convert": "node getCityCoordinates.js"
+    "convert": "node getCityCoordinates.js && node csvToSQL.js"
   },
   "author": "",
   "license": "ISC",
