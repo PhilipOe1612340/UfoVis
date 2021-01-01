@@ -4,6 +4,7 @@ const { parse } = require("node-html-parser");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const { access, mkdir, writeFile } = require("fs").promises;
 const { join } = require("path");
+const Progress = require('cli-progress');
 
 const DEBUG = false;
 
@@ -80,6 +81,9 @@ const pages = [
 
 const outputDir = "../ufodata";
 
+const bar = new Progress.SingleBar({}, Progress.Presets.shades_classic);
+bar.start(pages.length, 0);
+
 async function getDataSet() {
   if (!(await exists(outputDir))) {
     await mkdir(outputDir);
@@ -88,13 +92,11 @@ async function getDataSet() {
   let nrOfDataPoints = 0;
 
   for (const page of pages) {
+    bar.increment(1);
     const path = join(outputDir, page + ".csv");
     if ((await exists(path)) && !DEBUG) {
-      console.log("skipping", page);
       continue;
     }
-    console.log("downloading", page);
-
     // @ts-ignore
     const request = await fetch("http://www.nuforc.org/webreports/" + page + ".html");
     /** @type {string} */
@@ -109,7 +111,7 @@ async function getDataSet() {
 
     // get table headers
     const ths = document.querySelectorAll("th");
-    const csvWriter = createCsvWriter({ path, header: ths.map((row) => row.innerText).map((h, id) => ({ id: "data" + id, title: h })) });
+    const csvWriter = createCsvWriter({ path, header: ths.map((row) => row.innerText).slice(1).map((h, id) => ({ id: "data" + id, title: h })) });
 
     // transform data
     const trs = document.querySelectorAll("tr").slice(1);
@@ -117,8 +119,8 @@ async function getDataSet() {
       const record = {};
       row.childNodes
         .filter((n) => n.innerText !== "\r\n")
-        .map((n) => n.innerText.replace(/\r\n/gm, ""))
-        .slice(0, 7)
+        .map((n) => n.innerText.replace(/(\r|\n)/gm, ""))
+        .slice(1, 7)
         .forEach((text, id) => (record["data" + id] = text));
 
       return record;
@@ -127,6 +129,7 @@ async function getDataSet() {
     nrOfDataPoints += records.length;
   }
 
+  bar.stop();
   DEBUG && console.log("downloaded", nrOfDataPoints, "datapoints.");
   console.log();
   console.log("------------------------");

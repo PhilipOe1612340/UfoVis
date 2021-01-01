@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cli-progress": "^3.8.2",
     "csv-parser": "^2.3.3",
     "csv-writer": "^1.6.0",
     "node-fetch": "^2.6.1",
