@@ -4,7 +4,7 @@ const csv = require("csv-parser");
 const { createReadStream, createWriteStream } = require("fs");
 const { join } = require("path");
 
-let counter = 0
+let counter = 0;
 function convert(data) {
     // TODO: parse more patterns like:
     /*
@@ -33,7 +33,7 @@ function convert(data) {
 
 const file = createWriteStream('../data.sql');
 
-file.write("CREATE TABLE IF NOT EXISTS Report(id SERIAL, shape VARCHAR(20), duration INTEGER, description VARCHAR(135), date DATE NOT NULL, point GEOGRAPHY(POINT);");
+file.write("CREATE TABLE IF NOT EXISTS Report(id SERIAL, shape VARCHAR(20), duration INTEGER, description TEXT, date DATE NOT NULL, point GEOGRAPHY(POINT);");
 file.write("\n")
 file.write("TRUNCATE Report;");
 file.write("\n")
