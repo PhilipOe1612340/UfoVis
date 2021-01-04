@@ -13,3 +13,4 @@ doc/projectProposal.log
 doc/projectProposal.synctex.gz
 
 *.sql
+backend/virtual-env

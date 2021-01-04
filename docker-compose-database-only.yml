@@ -8,13 +8,5 @@ services:
       - ./database/preprocessing:/database/preprocessing
     ports:
       - "25432:5432"
-
-  backend:
-    build: ./backend
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./backend:/var/opt/gis
-
 volumes:
   database-data:
