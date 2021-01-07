@@ -29,14 +29,12 @@ crossorigin=""></script>
     
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onload = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            coordinates = JSON.parse(xmlHttp.responseText);
-            coordinates
-            .map(co => [co[1], co[0]])
-            .map(L.marker)
-            .forEach(marker => marker.addTo(mymap));
+        if (xmlHttp.status == 200)
+            reports = JSON.parse(xmlHttp.responseText);
+            reports.map(report => L.marker([report.latitude, report.longitude]).bindPopup(`${report.duration} Seconds – ${report.description} – ${report.date}`))
+            .forEach(marker => marker.addTo(mymap))
     }    
-    xmlHttp.open( "GET", "/someSights", true ); 
+    xmlHttp.open( "GET", "/reports", true ); 
     xmlHttp.send( null );
 
 </script>
