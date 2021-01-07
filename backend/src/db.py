@@ -1,15 +1,11 @@
-import psycopg2
-from psycopg2 import sql
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import os 
 
-class DBConnector:
-    def __init__(self):
-        self.host = os.environ.get('DATABASE_HOST', "database") 
-        self.port = 5432 if self.host == "database" else 25432
-            
-    def execute(self, query):
-        with psycopg2.connect(host=self.host, port=self.port, dbname="gis_db", user="gis_user", password="gis_pass") as connection:
-            print(query.as_string(connection))
-            with connection.cursor() as cursor:
-                cursor.execute(query)
-                return cursor.fetchall()
+
+host = os.environ.get('DATABASE_HOST', "database") 
+port = 5432 if host == "database" else 25432
+
+
+engine = create_engine(f'postgresql://gis_user:gis_pass@{host}:{port}/gis_db', echo=True)
+Session = sessionmaker(bind=engine)
