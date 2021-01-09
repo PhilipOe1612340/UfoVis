@@ -13,7 +13,7 @@ CORS(app, send_wildcard=True)
 @app.route('/reports')
 def reports():
     session = Session()
-    query = Report.query(session).limit(1000)
+    query = Report.query(session).limit(10000)
     reports = tuple(Report.row_to_dict(report) for report in query)
     return jsonify(reports), 200
 
