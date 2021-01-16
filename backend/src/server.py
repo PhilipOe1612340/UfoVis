@@ -6,16 +6,26 @@ import json
 from orm.report import Report
 from sqlalchemy import func
 from db import Session
+from orm.queries import handleFilters
 
 app = Flask(__name__)
 CORS(app, send_wildcard=True)
 
 @app.route('/reports')
 def reports():
-    session = Session()
-    query = Report.query(session).limit(10000)
+    query = Report.query(Session())
+    query = handleFilters(query, request.args)
+    limit = request.args.get("limit", 1000)
+    query = query.limit(limit)
     reports = tuple(Report.row_to_dict(report) for report in query)
     return jsonify(reports), 200
+
+@app.route('/shapes')
+def shapes():
+    query = Session().query(Report.shape).distinct()
+    query = handleFilters(query, request.args)
+    shapes = [next(iter(shape)) for shape in query]
+    return jsonify(shapes)
 
 @app.route('/')
 def send_index():
@@ -24,3 +34,4 @@ def send_index():
 @app.route('/<path:path>')
 def send_static(path):
     return send_from_directory('../static/', path)
+    
