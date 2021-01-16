@@ -5,12 +5,14 @@ FROM python:3.9-slim
 ENV APP_DIR=/var/opt/gis
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
+COPY ./requirements.txt /requirements.txt
 
 # install build-essentials
 RUN apt-get update && apt-get install -y build-essential
 
 # install dependencies
-RUN pip3 install --upgrade pip && pip3 install Flask Flask-Cors && pip3 install psycopg2-binary
+RUN pip3 install --upgrade pip
+RUN pip3 install -r /requirements.txt
 
 # environment variables
 ENV FLASK_APP=src/server.py

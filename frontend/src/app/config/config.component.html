@@ -1,0 +1,13 @@
+<div *ngIf="isExpanded" id="controll-panel">
+  <h1>Settings</h1>
+  <button id="close" (click)="toggleExpand()">x</button>
+
+  <div class="list-header" *ngFor="let key of keys">
+    <div class="list-label">{{ key.readable }}</div>
+    <div class="list-element" *ngIf="key.type === 'boolean'">
+        <mat-slide-toggle (change)="changeBoolean(key, $event)"></mat-slide-toggle>
+    </div>
+  </div>
+</div>
+
+<button (click)="toggleExpand()" id="expand">...</button>

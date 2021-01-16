@@ -1,26 +1,11 @@
-import psycopg2
-from psycopg2 import sql
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import os 
 
-DEBUG = True
 
-class DBConnector:
-    
-    def __init__(self):
-        # test connection
-        stmt = sql.SQL(""" SELECT count(*) FROM {table_name}""").format(
-           table_name=sql.Identifier('planet_osm_polygon')
-        )
-        if not self.execute(stmt):
-            raise Exception('table is not setup properly')
-        else:
-            print('table found')
+host = os.environ.get('DATABASE_HOST', "database") 
+port = 5432 if host == "database" else 25432
 
-        
-    def execute(self, query):
-        with psycopg2.connect(host="database", port=5432, dbname="gis_db", user="gis_user", password="gis_pass") as connection:
-            print(query.as_string(connection))
-            with connection.cursor() as cursor:
-                cursor.execute(query)
-                if DEBUG:
-                    print('execute: ', cursor.query)
-                return cursor.fetchall()
+
+engine = create_engine(f'postgresql://gis_user:gis_pass@{host}:{port}/gis_db', echo=True)
+Session = sessionmaker(bind=engine)
