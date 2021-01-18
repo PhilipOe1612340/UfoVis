@@ -27,6 +27,20 @@ docker-compose -f docker-compose-database-only.yml up -d && docker-compose logs 
 docker exec -it ufovis_database_1 /database/preprocessing/insertData.sh
 ```
 
+## Fill airport data in database
+```bash
+cd database/airports
+npm install
+```
+1. Small Dataset (default):
+```
+node airports_to_database.js 0
+```
+2. Large Dataset:
+```
+node airports_to_database.js 1
+```
+
 ## Run server locally
 
 If not done yet install virtual environment on your system
