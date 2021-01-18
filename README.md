@@ -11,7 +11,28 @@ git lfs pull
 npm install
 ```
 
+## Frontend
+Install dependencies
+```bash
+npm install
+```
+
+**Development server with auto refresh:**
+```bash
+npm start
+```
+Accessible at: `http://localhost:4200/`
+
+
+**Build production version:**
+```bash
+npm run build
+```
+Accessible only with a running backend at: `http://localhost:3000/`
+
+
 ## Docker Compose (Server and Database)
+Build frontend first for production use.
 
 ```
 docker-compose up -d && docker-compose logs -f

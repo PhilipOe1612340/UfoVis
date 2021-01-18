@@ -4,7 +4,7 @@ const csv = require("csv-parser");
 const { createReadStream, createWriteStream } = require("fs");
 const { join } = require("path");
 
-let counter = 0
+let counter = 0;
 function convert(data) {
     // TODO: parse more patterns like:
     /*

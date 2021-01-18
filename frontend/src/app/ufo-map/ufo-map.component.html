@@ -1,0 +1,7 @@
+<div id="legend" *ngIf="!config.getSetting('showMarkers')">
+  <span>{{ range.min }}s</span>
+  <img #legend *ngIf="gradientImg" [src]="gradientImg" />
+  <span>{{ range.max }}h</span>
+</div>
+<div leaflet [leafletOptions]="options" [leafletLayers]="layers" id="map"></div>
+<app-config></app-config>
