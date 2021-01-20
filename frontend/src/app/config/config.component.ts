@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { MatRadioChange } from '@angular/material/radio';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { DataService } from '../data.service';
 import { ConfigService } from './config.service';
 
-interface Setting {
+interface Setting<T = any> {
   key: string;
   type: string;
-  val: boolean;
+  val: T;
   readable: string;
+  options?: string[];
 }
 
 @Component({
@@ -16,13 +19,22 @@ interface Setting {
 })
 export class ConfigComponent implements OnInit {
   public isExpanded = false;
-  public keys: Setting[] = [
-    { key: "showMarkers", type: "boolean", val: false, readable: "Display individual markers" }
-  ];
+  public keys: Setting[] = [];
 
-  constructor(private config: ConfigService) { }
+  constructor(private config: ConfigService, private service: DataService) {
+  }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    const markersConfig = { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" };
+    const shapes = await this.service.getShapes();
+    const shapeConfig: Setting<string> = {
+      key: "displayShape",
+      type: "radio",
+      val: "*",
+      options: shapes,
+      readable: "Display only specified shape:"
+    };
+    this.keys.push(markersConfig, shapeConfig);
     this.config.registerListener('configIsShown', (shown: boolean) => this.isExpanded = shown);
   }
 
@@ -32,5 +44,10 @@ export class ConfigComponent implements OnInit {
 
   public changeBoolean(setting: Setting, event: MatSlideToggleChange) {
     this.config.setSetting(setting.key, event.checked);
+  }
+
+  public changeRadio(setting: Setting<string>, event: MatRadioChange) {
+    setting.val = event.value;
+    this.config.setSetting(setting.key, event.value);
   }
 }

@@ -28,7 +28,7 @@ Accessible at: `http://localhost:4200/`
 ```bash
 npm run build
 ```
-Accessible only with a running backend at: `http://localhost:3000/`
+Accessible only with a running backend at: `http://localhost:5000/`
 
 
 ## Docker Compose (Server and Database)

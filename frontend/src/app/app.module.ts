@@ -7,14 +7,19 @@ import { UfoMapComponent } from './ufo-map/ufo-map.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigComponent } from './config/config.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TimeSliderComponent } from './time-slider/time-slider.component';
 
+// Material Component Modules
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
   declarations: [
     AppComponent,
     UfoMapComponent,
-    ConfigComponent
+    ConfigComponent,
+    TimeSliderComponent
   ],
   imports: [
     BrowserModule,
@@ -22,6 +27,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     HttpClientModule,
     BrowserAnimationsModule,
     MatSlideToggleModule,
+    MatRadioModule,
+    NgxSliderModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
