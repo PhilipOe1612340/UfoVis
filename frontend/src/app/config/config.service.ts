@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
-  private readonly config: { [key: string]: any } = { showMarkers: false, configIsShown: false, startYear: 1980, stopYear: 2021 };
+  private readonly config: { [key: string]: any } = { showMarkers: false, configIsShown: false, startYear: 1980, stopYear: 2021, displayShape: "*" };
   private subscribers: { type: string, fn: (newVal: any) => void }[] = [];
 
   constructor() { }

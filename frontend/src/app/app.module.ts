@@ -11,6 +11,7 @@ import { TimeSliderComponent } from './time-slider/time-slider.component';
 
 // Material Component Modules
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
@@ -26,6 +27,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     HttpClientModule,
     BrowserAnimationsModule,
     MatSlideToggleModule,
+    MatRadioModule,
     NgxSliderModule,
   ],
   providers: [],

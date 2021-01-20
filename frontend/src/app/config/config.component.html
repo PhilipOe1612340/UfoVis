@@ -5,7 +5,13 @@
   <div class="list-header" *ngFor="let key of keys">
     <div class="list-label">{{ key.readable }}</div>
     <div class="list-element" *ngIf="key.type === 'boolean'">
-        <mat-slide-toggle (change)="changeBoolean(key, $event)"></mat-slide-toggle>
+      <mat-slide-toggle (change)="changeBoolean(key, $event)"></mat-slide-toggle>
+    </div>
+    <div class="list-element" *ngIf="key.type === 'radio'">
+      <mat-radio-group [value]="key.val" (change)="changeRadio(key, $event)">
+        <mat-radio-button value="*"> All </mat-radio-button>
+        <mat-radio-button *ngFor="let option of key.options" [value]="option"> {{option}} </mat-radio-button>
+      </mat-radio-group>
     </div>
   </div>
 </div>

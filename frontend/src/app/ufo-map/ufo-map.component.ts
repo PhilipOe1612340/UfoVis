@@ -35,12 +35,20 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.config.registerListener("showMarkers", () => this.repaint(), false);
     this.config.registerListener("startYear", () => this.repaint(true), false);
     this.config.registerListener("stopYear", () => this.repaint(true), false);
+    this.config.registerListener("displayShape", () => this.repaint(true), false);
     this.repaint();
   }
 
 
   private async repaint(changed = false) {
-    this.data = await this.service.getData({ params: { fromYear: this.config.getSetting("startYear"), toYear: this.config.getSetting("stopYear") }, forceFetch: changed })
+    const shape = this.config.getSetting("displayShape");
+    this.data = await this.service.getData({
+      params: {
+        fromYear: this.config.getSetting("startYear"),
+        toYear: this.config.getSetting("stopYear"),
+        shape: shape === "*" ? undefined : shape,
+      }, forceFetch: changed
+    })
     const show = this.config.getSetting('showMarkers')
     if (show) {
       this.showIcons();
