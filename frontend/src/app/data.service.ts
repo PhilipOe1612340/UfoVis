@@ -29,7 +29,7 @@ export class DataService {
       params = Object.keys(options.params).reduce((p, key) => p.append(key, options.params![key] as any), params);
     }
 
-    this.data = await this.http.get<Report[]>(environment.server + 'reports', { params: params }).toPromise();
+    this.data = await this.http.get<Report[]>(environment.server + 'reports', { params }).toPromise();
     return this.data;
   }
 }
