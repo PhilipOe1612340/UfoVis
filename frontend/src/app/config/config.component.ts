@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DataService } from '../data.service';
-import { ConfigService } from './config.service';
+import { ConfigService, ConfigSetting } from './config.service';
 
 interface Setting<T = any> {
-  key: string;
+  key: ConfigSetting;
   type: string;
   val: T;
   readable: string;
@@ -25,8 +25,9 @@ export class ConfigComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const config = [
+    const config: Setting[] = [
       { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" },
+      { key: "aggregate", type: "boolean", val: true, readable: "Aggregate points for every city" },
     ];
     const shapes = await this.service.getShapes();
     const shapeConfig: Setting<string> = {
