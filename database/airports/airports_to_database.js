@@ -61,28 +61,29 @@ async function download_data() {
 function response_data_to_csv(response_data_string) {
     let response_data_array = CSV.parse(response_data_string);
     let transformed_data = [];
-    for (let i = 1; i < response_data_array.length; i++) {
-        for (let j = 0; j < response_data_array[i].length; j++) {
-            if (response_data_array[i][j] === '' || response_data_array[i][j] === undefined) {
-                response_data_array[i][j] = null;
+    const [, ...data_without_header] = response_data_array;
+    data_without_header.forEach(data_sub_array => {
+        data_sub_array.forEach((part, index, data_sub_array) => {
+            if (data_sub_array[index] === '' || data_sub_array[index] === undefined) {
+                data_sub_array[index] = null;
             } else {
-                response_data_array[i][j] = response_data_array[i][j].replaceAll(`'`, `''`)
+                data_sub_array[index] = data_sub_array[index].replaceAll(`'`, `''`)
             }
-        }
-        if (response_data_array[i][index_to_key[7]] === undefined) {
-            response_data_array[i][index_to_key[7]] = 'large_airport';
+        });
+        if (data_sub_array[index_to_key[7]] === undefined) {
+            data_sub_array[index_to_key[7]] = 'large_airport';
         }
         const temp = new Object();;
-        temp.id = response_data_array[i][index_to_key[0]];
-        temp.iata_code = response_data_array[i][index_to_key[1]];
-        temp.name = response_data_array[i][index_to_key[2]];
-        temp.latitude = response_data_array[i][index_to_key[3]];
-        temp.longitude = response_data_array[i][index_to_key[4]];
-        temp.elevation_ft = response_data_array[i][index_to_key[5]];
-        temp.country_code = response_data_array[i][index_to_key[6]];
-        temp.type_size = response_data_array[i][index_to_key[7]];
+        temp.id = data_sub_array[index_to_key[0]];
+        temp.iata_code = data_sub_array[index_to_key[1]];
+        temp.name = data_sub_array[index_to_key[2]];
+        temp.latitude = data_sub_array[index_to_key[3]];
+        temp.longitude = data_sub_array[index_to_key[4]];
+        temp.elevation_ft = data_sub_array[index_to_key[5]];
+        temp.country_code = data_sub_array[index_to_key[6]];
+        temp.type_size = data_sub_array[index_to_key[7]];
         transformed_data.push(temp);
-    }
+    });
     return transformed_data;
 }
 
@@ -98,28 +99,29 @@ async function create_table() {
 async function insert_into_table(data) {
     let insertion_string = '';
     const bar = new PROGRESSBAR('Insertion:  [:bar] :percent', { complete: '=', incomplete: ' ', total: Math.floor(data.length / 1000 * progress_length) + 1});
-    for (let i = 0; i < data.length; i++) {
+    let counter = 0;
+    for (data_object of data) {
         insertion_string += INSERT_INTO_STRING;
-        insertion_string += `${data[i].id},`;
-        if (data[i].iata_code === null) {
+        insertion_string += `${data_object.id},`;
+        if (data_object.iata_code === null) {
             insertion_string += 'null,';
         } else {
-            insertion_string += `'${data[i].iata_code}',`;
+            insertion_string += `'${data_object.iata_code}',`;
         }
-        insertion_string += `'${data[i].name}',`;
-        insertion_string += `ST_SetSRID(ST_MakePoint(${data[i].longitude}, ${data[i].latitude}), 4326),`;
-        insertion_string += `${data[i].elevation_ft},`;
-        if (data[i].country_code === null) {
+        insertion_string += `'${data_object.name}',`;
+        insertion_string += `ST_SetSRID(ST_MakePoint(${data_object.longitude}, ${data_object.latitude}), 4326),`;
+        insertion_string += `${data_object.elevation_ft},`;
+        if (data_object.country_code === null) {
             insertion_string += 'null,';
         } else {
-            insertion_string += `'${data[i].country_code}',`;
+            insertion_string += `'${data_object.country_code}',`;
         }
-        if (data[i].type_size === null) {
+        if (data_object.type_size === null) {
             insertion_string += 'null);\n';
         } else {
-            insertion_string += `'${data[i].type_size}');\n`;
+            insertion_string += `'${data_object.type_size}');\n`;
         }
-        if ((i % 1000) === 0 || i === data.length - 1) {
+        if ((counter % 1000) === 0 || counter === data.length - 1) {
             const client_insertion = new PG.Client(CONNECTION_STRING);
             await client_insertion.connect();
             await client_insertion.query(insertion_string)
@@ -131,6 +133,7 @@ async function insert_into_table(data) {
             insertion_string = '';
             bar.tick(progress_length);
         }
+        counter++;
     }
-    console.log(`Successfully Inserted ${data.length} Data Records`)
+    console.log(`Successfully Inserted ${data.length} Data Records`);
 }

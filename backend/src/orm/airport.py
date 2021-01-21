@@ -7,7 +7,7 @@ Base = declarative_base()
 
 class Airport(Base):
     __tablename__ = 'airport'
-    airport_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     iata_code = Column(String)
     name = Column(String)
     coordinates = Column(Geography('POINT'))
@@ -19,7 +19,7 @@ class Airport(Base):
     @classmethod
     def query(cls, session):
         return session.query(
-            cls.airport_id,
+            cls.id,
             cls.iata_code,
             cls.name,
             func.st_asgeojson(cls.coordinates).label("geojson")
