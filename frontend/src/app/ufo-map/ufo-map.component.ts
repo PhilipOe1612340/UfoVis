@@ -107,6 +107,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         toYear: this.config.getSetting("stopYear"),
         shape: shape === "*" ? undefined : shape,
         limit: show ? '1000' : '10000',
+      }
     })
     if (show) {
       this.showIcons();
