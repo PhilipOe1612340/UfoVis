@@ -58,8 +58,17 @@ button#expand {
 .list-element {
   display: flex;
   flex-direction: column;
+  flex: 2 1 10%;
 }
 
 mat-radio-button {
-  display: inline;
+  display: block;
+  width: 100%;
+  padding: 2px 5px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+mat-radio-button:hover {
+  background-color: rgba(255, 255, 255, 0.274);
 }

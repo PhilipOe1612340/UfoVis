@@ -25,7 +25,9 @@ export class ConfigComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const markersConfig = { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" };
+    const config = [
+      { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" },
+    ];
     const shapes = await this.service.getShapes();
     const shapeConfig: Setting<string> = {
       key: "displayShape",
@@ -34,12 +36,15 @@ export class ConfigComponent implements OnInit {
       options: shapes,
       readable: "Display only specified shape:"
     };
-    this.keys.push(markersConfig, shapeConfig);
+    this.keys.push(...config, shapeConfig);
     this.config.registerListener('configIsShown', (shown: boolean) => this.isExpanded = shown);
   }
 
   public toggleExpand() {
     this.config.setSetting('configIsShown', !this.isExpanded);
+    this.keys.forEach(k => {
+      k.val = this.config.getSetting(k.key);
+    })
   }
 
   public changeBoolean(setting: Setting, event: MatSlideToggleChange) {
@@ -49,5 +54,9 @@ export class ConfigComponent implements OnInit {
   public changeRadio(setting: Setting<string>, event: MatRadioChange) {
     setting.val = event.value;
     this.config.setSetting(setting.key, event.value);
+  }
+
+  public getKey(_i: number, setting: Setting) {
+    return setting.key;
   }
 }

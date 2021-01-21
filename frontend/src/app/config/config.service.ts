@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+
+const debug = !environment.production;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-  private readonly config: { [key: string]: any } = { showMarkers: false, configIsShown: false, startYear: 1980, stopYear: 2021, displayShape: "*" };
+  private readonly config: { [key: string]: any } = { showMarkers: false, configIsShown: false, startYear: 2006, stopYear: 2021, displayShape: "*", aggregate: true };
   private subscribers: { type: string, fn: (newVal: any) => void }[] = [];
 
   constructor() { }
 
   setSetting(key: string, value: any, force = false): boolean {
+    debug && console.log('change', key, 'from', this.config[key], 'to', value);
     if (this.config[key] === value && !force) { return false; }
     this.config[key] = value;
     this.subscribers.filter(s => s.type === key).forEach(s => s.fn(value));
