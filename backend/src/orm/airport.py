@@ -2,12 +2,11 @@ from geoalchemy2 import Geography
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func
-# from typing import NamedTuple
 
 Base = declarative_base()
 
-class Report(Base):
-    __tablename__ = 'airports'
+class Airport(Base):
+    __tablename__ = 'airport'
     airport_id = Column(Integer, primary_key=True)
     iata_code = Column(String)
     name = Column(String)
@@ -27,14 +26,4 @@ class Report(Base):
             cls.elevation_ft,
             cls.country_code,
             cls.type_size,
-            )
-
-    # @staticmethod
-    # def row_to_dict(row):
-    #     import json
-    #     row_dict = row._asdict()
-    #     geo_dict = json.loads(row_dict["geojson"])
-    #     del row_dict["geojson"]
-    #     row_dict["latitude"] = geo_dict["coordinates"][1]
-    #     row_dict["longitude"] = geo_dict["coordinates"][0]
-    #     return row_dict
+        )
