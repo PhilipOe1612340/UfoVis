@@ -94,6 +94,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.config.registerListener("startYear", () => this.repaint(true), false);
     this.config.registerListener("stopYear", () => this.repaint(true), false);
     this.config.registerListener("displayShape", () => this.repaint(true), false);
+    this.config.registerListener("aggregate", () => this.repaint(true), false);
     this.repaint();
   }
 
@@ -101,13 +102,15 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   private async repaint(changed = false) {
     const show = this.config.getSetting('showMarkers');
     const shape = this.config.getSetting("displayShape");
+    const aggregate = this.config.getSetting("aggregate");
+
     this.data = await this.service.getData({
       params: {
         fromYear: this.config.getSetting("startYear"),
         toYear: this.config.getSetting("stopYear"),
         shape: shape === "*" ? undefined : shape,
         limit: show ? '1000' : '10000',
-      }
+      }, forceFetch: changed, aggregate
     })
     if (show) {
       this.showIcons();
@@ -121,6 +124,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     const heatmapConfig = {
       radius: 26,
       maxOpacity: 0.8,
+      minOpacity: .1,
       blur: 0.9,
       useLocalExtrema: true,
       latField: 'latitude',
@@ -164,6 +168,10 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     legendCtx.fillStyle = canvasGradient;
     legendCtx.fillRect(0, 0, 100, 10);
     this.gradientImg = this.legendCanvas.toDataURL();
+  }
+
+  public get showLegend() {
+    return !this.config.getSetting('showMarkers') || !this.config.getSetting('aggregate');
   }
 }
 

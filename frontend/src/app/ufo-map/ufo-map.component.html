@@ -1,4 +1,4 @@
-<div id="legend" *ngIf="!config.getSetting('showMarkers')">
+<div id="legend" *ngIf="showLegend">
   <span>{{ range.min }}</span>
   <img #legend *ngIf="gradientImg" [src]="gradientImg" />
   <span>{{ range.max }}</span>

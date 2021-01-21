@@ -31,7 +31,7 @@ export class DataService {
     return this.shapes;
   }
 
-  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean } = {}): Promise<Report[]> {
+  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean, aggregate?: boolean } = {}): Promise<Report[]> {
     if (this.data.length > 0 && !options.forceFetch) {
       return this.data;
     }
@@ -43,7 +43,25 @@ export class DataService {
         .reduce((p, key) => p.append(key, options.params![key] as any), params);
     }
 
-    this.data = await this.http.get<Report[]>(environment.server + 'reports', { params }).toPromise();
+    const data = await this.http.get<Report[]>(environment.server + 'reports', { params }).toPromise();
+
+    if (options.aggregate) {
+      const points: Map<string, number> = new Map();
+      const hash = (d: Report) => d.longitude.toFixed(2) + d.longitude.toFixed(2);
+      console.time('convert')
+      data.forEach(d => {
+        const h = hash(d);
+        points.set(h, (points.get(h) ?? 0) + 1);
+      });
+      data.forEach(d => {
+        const h = hash(d);
+        d.duration = points.get(h) ?? 0;
+        points.set(h, 0);
+      })
+      console.timeEnd('convert');
+    }
+
+    this.data = data.filter(d => d.duration > 0);
     return this.data;
   }
 }
