@@ -24,7 +24,9 @@ export class DataService {
     if (this.shapes.length > 0 && !options.forceFetch) {
       return this.shapes;
     }
-    this.shapes = await this.http.get<string[]>(environment.server + "shapes").toPromise();
+    const shapes = await this.http.get<string[]>(environment.server + "shapes").toPromise();
+    const shapeBlacklist = ["Unknown", "Other"];
+    this.shapes = shapes.filter(s => !!s && !shapeBlacklist.includes(s));
     return this.shapes;
   }
 
