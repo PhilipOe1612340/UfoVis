@@ -8,6 +8,7 @@ export interface Report {
   duration: number,
   description: string,
   date: Date,
+  shape: string,
 }
 
 
