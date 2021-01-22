@@ -136,8 +136,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     // @ts-ignore
     const heatmapLayer = new HeatmapOverlay(heatmapConfig);
     this.layers = [heatmapLayer];
-    const aggregate = this.config.getSetting("aggregate");
-    heatmapLayer.setData({ max: aggregate ? this.data.reduce((max, curr) => max > curr.duration ? curr.duration : max, 0) : 1, data: this.data });
+    heatmapLayer.setData({ max: this.data.reduce((max, curr) => max > curr.duration ? curr.duration : max, 0), data: this.data });
     this.updateLegend(heatmapConfig.gradient);
   }
 

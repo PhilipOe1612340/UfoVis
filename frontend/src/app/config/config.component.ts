@@ -27,7 +27,6 @@ export class ConfigComponent implements OnInit {
   async ngOnInit() {
     const config: Setting[] = [
       { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" },
-      { key: "aggregate", type: "boolean", val: true, readable: "Aggregate points for every city" },
     ];
     const shapes = await this.service.getShapes();
     const shapeConfig: Setting<string> = {
