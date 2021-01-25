@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as L from "leaflet";
-import { DataService, Report } from '../data.service';
+import { DataService, Report, Airport } from '../data.service';
+import 'leaflet.heat/dist/leaflet-heat.js';
+import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import { ConfigService } from '../config/config.service';
 
 declare var HeatmapOverlay: any;
@@ -64,6 +66,7 @@ export interface Coordinate {
   styleUrls: ['./ufo-map.component.scss']
 })
 export class UfoMapComponent implements OnInit, AfterViewInit {
+
   public options = {
     layers: [
       L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -77,6 +80,13 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   };
 
   public layers: L.Marker[] = [];
+
+  public map: any;
+  public layersControl: any;
+  private airport_layer_group = L.markerClusterGroup();
+  private airport_data: Airport[] = [];
+  public icon_size_variable: number = 25;
+
   public range = { min: 0, max: 100 };
   public gradientImg: string = "";
 
@@ -90,6 +100,16 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.airport_data = await this.service.getAirports();
+    this.airport_overlay();
+    this.layersControl = {
+      // baseLayers: {
+      //   "Map": L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+      // },
+      overlays: {
+        "airports": this.airport_layer_group
+      }
+    };
     this.config.registerListener("showMarkers", () => this.repaint(), false);
     this.config.registerListener("startYear", () => this.repaint(true), false);
     this.config.registerListener("stopYear", () => this.repaint(true), false);
@@ -97,7 +117,6 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.config.registerListener("aggregate", () => this.repaint(true), false);
     this.repaint();
   }
-
 
   private async repaint(changed = false) {
     const show = this.config.getSetting('showMarkers');
@@ -172,6 +191,60 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
 
   public get showLegend() {
     return !this.config.getSetting('showMarkers') || !this.config.getSetting('aggregate');
+  }
+
+  private airport_overlay() {
+    const helipad_icon_options = {
+      icon: L.icon({
+        iconSize: [this.icon_size_variable, this.icon_size_variable],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/helipad_icon.png',
+        // <div>Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+      })
+    };
+    const airport_icon_options = {
+      icon: L.icon({
+        iconSize: [this.icon_size_variable, this.icon_size_variable],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/airport_icon.png',
+        // <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+      })
+    };
+    const balloon_icon_options = {
+      icon: L.icon({
+        iconSize: [this.icon_size_variable, this.icon_size_variable],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/balloon_icon.png',
+        // <div>Icons made by <a href="https://www.flaticon.com/authors/icongeek26" title="Icongeek26">Icongeek26</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+      })
+    };
+    const seaplane_icon_options = {
+      icon: L.icon({
+        iconSize: [this.icon_size_variable, this.icon_size_variable],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/seaplane_icon.png',
+        // <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+      })
+    };
+    
+    this.airport_data.slice(0, 1000).map((airport) => {
+      let type;
+      switch(airport.type_size) {
+        case 'seaplane_base':
+          type = seaplane_icon_options;
+          break;
+        case 'heliport':
+          type = helipad_icon_options;
+          break;
+        case 'ballonport':
+          type = balloon_icon_options;
+          break;
+        default:
+          type = airport_icon_options;
+          break;
+      }
+      this.airport_layer_group.addLayer(L.marker([airport.latitude, airport.longitude], type).bindPopup(`${airport.name} – ${airport.country_code}`));
+    });
   }
 }
 

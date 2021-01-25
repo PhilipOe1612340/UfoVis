@@ -3,6 +3,6 @@
   <img #legend *ngIf="gradientImg" [src]="gradientImg" />
   <span>{{ range.max }}</span>
 </div>
-<div leaflet [leafletOptions]="options" [leafletLayers]="layers" id="map"></div>
+<div leaflet [leafletOptions]="options" [leafletLayers]="layers" [leafletLayersControl]="layersControl" id="map"></div>
 <app-config></app-config>
 <time-slider></time-slider>

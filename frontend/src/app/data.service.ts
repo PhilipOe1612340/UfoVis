@@ -11,6 +11,16 @@ export interface Report {
   shape: string,
 }
 
+export interface Airport {
+  latitude: number,
+  longitude: number,
+  iata_code: string,
+  name: string,
+  elevation: number,
+  country_code: string,
+  type_size: string,
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +28,7 @@ export interface Report {
 export class DataService {
   private data: Report[] = [];
   private shapes: string[] = [];
+  private airports: Airport[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -63,5 +74,10 @@ export class DataService {
 
     this.data = data.filter(d => d.duration > 0);
     return this.data;
+  }
+
+  async getAirports(): Promise<Airport[]> {
+    this.airports = await this.http.get<Airport[]>(environment.server + 'airports', { }).toPromise();
+    return this.airports;
   }
 }
