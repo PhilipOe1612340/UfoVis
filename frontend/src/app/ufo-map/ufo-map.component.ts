@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as L from "leaflet";
 import { DataService, Report, Airport } from '../data.service';
 import 'leaflet.heat/dist/leaflet-heat.js';
-import 'leaflet.markercluster/dist/leaflet.markercluster.js';
+import "leaflet.markercluster";
 import { ConfigService } from '../config/config.service';
 
 declare var HeatmapOverlay: any;
@@ -81,11 +81,14 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
 
   public layers: L.Marker[] = [];
 
-  public map: any;
+  private map: any;
   public layersControl: any;
-  private airport_layer_group = L.markerClusterGroup();
   private airport_data: Airport[] = [];
-  public icon_size_variable: number = 25;
+  private icon_size_variable: number = 25;
+
+  public markerClusterGroup!: L.MarkerClusterGroup;
+  public markerClusterData: any[] = [];
+  public markerClusterOptions!: L.MarkerClusterGroupOptions;
 
   public range = { min: 0, max: 100 };
   public gradientImg: string = "";
@@ -99,12 +102,16 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.legendCanvas.height = 10;
   }
 
+  markerClusterReady(group: L.MarkerClusterGroup) {
+    this.markerClusterGroup = group;
+  }
+
   async ngOnInit(): Promise<void> {
     this.airport_data = await this.service.getAirports();
     this.airport_overlay();
     this.layersControl = {
       overlays: {
-        "airports": this.airport_layer_group
+        'airports': this.markerClusterGroup
       }
     };
     this.config.registerListener("showMarkers", () => this.repaint(), false);
@@ -223,7 +230,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         // <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
       })
     };
-    
+    const data: any[] = [];
     this.airport_data.slice(0, 1000).map((airport) => {
       let type;
       switch(airport.type_size) {
@@ -240,8 +247,9 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
           type = airport_icon_options;
           break;
       }
-      this.airport_layer_group.addLayer(L.marker([airport.latitude, airport.longitude], type).bindPopup(`${airport.name} – ${airport.country_code}`));
+      data.push(L.marker([airport.latitude, airport.longitude], type).bindPopup(`${airport.name} – ${airport.country_code}`));
     });
+    this.markerClusterData = data;
   }
 }
 

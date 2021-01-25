@@ -14,6 +14,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
+import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +31,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     MatSlideToggleModule,
     MatRadioModule,
     NgxSliderModule,
+    LeafletMarkerClusterModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
