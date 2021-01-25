@@ -103,9 +103,6 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.airport_data = await this.service.getAirports();
     this.airport_overlay();
     this.layersControl = {
-      // baseLayers: {
-      //   "Map": L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-      // },
       overlays: {
         "airports": this.airport_layer_group
       }
