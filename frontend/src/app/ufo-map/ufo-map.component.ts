@@ -81,14 +81,40 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
 
   public layers: L.Marker[] = [];
 
-  private map: any;
   public layersControl: any;
   private airport_data: Airport[] = [];
   private icon_size_variable: number = 25;
 
+  public markerClusterOptions: L.MarkerClusterGroupOptions = {
+    iconCreateFunction: function (cluster) {
+        const markers = cluster.getAllChildMarkers();
+        let sea_plane = 0;
+        let heliport = 0;
+        let ballonport = 0;
+        let airport = 0;
+        markers.forEach((marker) => {
+          switch(marker.options.title) {
+            case 'seaplane_base':
+              sea_plane++;
+              break;
+            case 'heliport':
+              heliport++;
+              break;
+            case 'ballonport':
+              ballonport++;
+              break;
+            default:
+              airport++;
+              break;
+          }
+        });
+        var html = `<div style="font-size: 8px">sea: ${sea_plane}<br>heli: ${heliport}<br>balloon: ${ballonport}<br>airport: ${airport}</div>`;
+        return L.divIcon({ html: html, iconSize: L.point(50, 50) });
+    },
+    disableClusteringAtZoom: 9
+  }
   public markerClusterGroup!: L.MarkerClusterGroup;
-  public markerClusterData: any[] = [];
-  public markerClusterOptions!: L.MarkerClusterGroupOptions;
+  public markerClusterData: L.Marker[] = [];
 
   public range = { min: 0, max: 100 };
   public gradientImg: string = "";
@@ -198,58 +224,75 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   }
 
   private airport_overlay() {
-    const helipad_icon_options = {
-      icon: L.icon({
+    const helipad_icon_options = L.icon({
         iconSize: [this.icon_size_variable, this.icon_size_variable],
         iconAnchor: [0, 0],
         iconUrl: 'assets/Icon/helipad_icon.png',
         // <div>Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-      })
-    };
-    const airport_icon_options = {
-      icon: L.icon({
+      });
+    const airport_icon_options = L.icon({
         iconSize: [this.icon_size_variable, this.icon_size_variable],
         iconAnchor: [0, 0],
         iconUrl: 'assets/Icon/airport_icon.png',
         // <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-      })
-    };
-    const balloon_icon_options = {
-      icon: L.icon({
+      });
+    const balloon_icon_options = L.icon({
         iconSize: [this.icon_size_variable, this.icon_size_variable],
         iconAnchor: [0, 0],
         iconUrl: 'assets/Icon/balloon_icon.png',
         // <div>Icons made by <a href="https://www.flaticon.com/authors/icongeek26" title="Icongeek26">Icongeek26</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-      })
-    };
-    const seaplane_icon_options = {
-      icon: L.icon({
+      });
+    const seaplane_icon_options = L.icon({
         iconSize: [this.icon_size_variable, this.icon_size_variable],
         iconAnchor: [0, 0],
         iconUrl: 'assets/Icon/seaplane_icon.png',
         // <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-      })
-    };
-    const data: any[] = [];
+      });
+    const airport_marker: L.Marker[] = [];
     this.airport_data.slice(0, 1000).map((airport) => {
       let type;
+      let title;
       switch(airport.type_size) {
         case 'seaplane_base':
           type = seaplane_icon_options;
+          title = 'seaplane_base';
           break;
         case 'heliport':
           type = helipad_icon_options;
+          title = 'heliport';
           break;
         case 'ballonport':
           type = balloon_icon_options;
+          title = 'ballonport';
           break;
         default:
           type = airport_icon_options;
+          title = 'airport';
           break;
       }
-      data.push(L.marker([airport.latitude, airport.longitude], type).bindPopup(`${airport.name} – ${airport.country_code}`));
+      const marker = L.marker([airport.latitude, airport.longitude], {icon: type, title: title}).bindPopup(`
+        <table>
+          <tr>
+            <th>Name:</th>
+            <td>${airport.name}</td>
+          </tr>
+          <tr>
+            <th>IATA:</th>
+            <td>${airport.iata_code}</td>
+          </tr>
+          <tr>
+            <th>Country Code:</th>
+            <td>${airport.country_code}</td>
+          </tr>
+          <tr>
+            <th>Elevation (in ft):</th>
+            <td>${airport.elevation}</td>
+          </tr>
+        </table>`
+      );
+      airport_marker.push(marker);
     });
-    this.markerClusterData = data;
+    this.markerClusterData = airport_marker;
   }
 }
 
