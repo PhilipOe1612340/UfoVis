@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { GeoObj } from './ufo-map/ufo-map.component';
 
 export interface Report {
   latitude: number,
@@ -26,7 +27,7 @@ export interface Airport {
   providedIn: 'root'
 })
 export class DataService {
-  private data: Report[] = [];
+  private data: GeoObj[] = [];
   private shapes: string[] = [];
   private airports: Airport[] = [];
 
@@ -42,7 +43,7 @@ export class DataService {
     return this.shapes;
   }
 
-  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean, aggregate?: boolean } = {}): Promise<Report[]> {
+  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean, aggregate?: boolean } = {}): Promise<GeoObj[]> {
     if (this.data.length > 0 && !options.forceFetch) {
       return this.data;
     }
@@ -54,25 +55,8 @@ export class DataService {
         .reduce((p, key) => p.append(key, options.params![key] as any), params);
     }
 
-    const data = await this.http.get<Report[]>(environment.server + 'reports', { params }).toPromise();
-
-    if (options.aggregate) {
-      const points: Map<string, number> = new Map();
-      const hash = (d: Report) => d.longitude.toFixed(2) + d.longitude.toFixed(2);
-      console.time('convert')
-      data.forEach(d => {
-        const h = hash(d);
-        points.set(h, (points.get(h) ?? 0) + 1);
-      });
-      data.forEach(d => {
-        const h = hash(d);
-        d.duration = points.get(h) ?? 0;
-        points.set(h, 0);
-      })
-      console.timeEnd('convert');
-    }
-
-    this.data = data.filter(d => d.duration > 0);
+    const data = await this.http.get<GeoObj[]>(environment.server + 'reports', { params }).toPromise();
+    this.data = data;
     return this.data;
   }
 

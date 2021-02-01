@@ -18,6 +18,8 @@ class Report(Base):
 
     @classmethod
     def query(cls, session):
+
+
         return session.query(
             cls.id,
             cls.shape,
@@ -31,10 +33,15 @@ class Report(Base):
     def row_to_dict(row):
         import json
         row_dict = row._asdict()
+        row_dict["id"] = row.id
+        row_dict["shape"] = row.shape
+        row_dict["duration"] = row.duration
+        row_dict["description"] = row.description
+        row_dict["date"] = row.date
+
         geo_dict = json.loads(row_dict["geojson"])
         del row_dict["geojson"]
-        row_dict["latitude"] = geo_dict["coordinates"][1]
-        row_dict["longitude"] = geo_dict["coordinates"][0]
-        return row_dict
+        geo_dict["properties"] = row_dict
+        return geo_dict
 
     

@@ -45,5 +45,5 @@ def airports():
     limit = request.args.get("limit", 1000)
     query = query.filter(Airport.type_size != 'closed')
     query = query.limit(limit)
-    airports = tuple(Report.row_to_dict(report) for report in query)
+    airports = tuple(Airport.row_to_dict(report) for report in query)
     return jsonify(airports), 200

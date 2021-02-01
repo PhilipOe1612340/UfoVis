@@ -24,6 +24,8 @@
     "@angular/router": "~11.0.6",
     "@asymmetrik/ngx-leaflet": "^8.1.0",
     "@asymmetrik/ngx-leaflet-markercluster": "^5.0.1",
+    "@types/d3": "^6.3.0",
+    "d3": "^6.5.0",
     "leaflet": "^1.7.1",
     "leaflet-heatmap": "^1.0.0",
     "leaflet.markercluster": "^1.4.1",
