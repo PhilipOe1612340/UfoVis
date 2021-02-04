@@ -9,7 +9,7 @@ interface Setting<T = any> {
   type: string;
   val: T;
   readable: string;
-  options?: string[];
+  options?: any[];
 }
 
 @Component({
@@ -27,18 +27,18 @@ export class ConfigComponent implements OnInit {
   async ngOnInit() {
     const config: Setting[] = [
       { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" },
-      { key: "aggregate", type: "boolean", val: true, readable: "Aggregate points for every city" },
     ];
     const shapes = await this.service.getShapes();
     const shapeConfig: Setting<string> = {
       key: "displayShape",
       type: "radio",
       val: "*",
-      options: shapes,
+      options: shapes.map(option => ({ option, color: this.service.colorScale(option).slice(4, -1), selected: false })),
       readable: "Display only specified shape:"
     };
     this.keys.push(...config, shapeConfig);
     this.config.registerListener('configIsShown', (shown: boolean) => this.isExpanded = shown);
+    this.config.registerListener('displayShape', (v) => this.keys[1].options?.forEach(o => o.selected = o.option === v));
   }
 
   public toggleExpand() {

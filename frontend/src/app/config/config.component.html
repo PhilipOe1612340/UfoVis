@@ -15,11 +15,18 @@
       <mat-radio-group [value]="key.val" (change)="changeRadio(key, $event)">
         <mat-radio-button color="accent" value="*"> All </mat-radio-button>
         <mat-radio-button
-          color="primary"
-          *ngFor="let option of key.options"
-          [value]="option"
+          color="accent"
+          *ngFor="let btn of key.options"
+          [value]="btn.option"
+          [style]="
+            'background: rgba(' +
+            btn.color +
+            ', ' +
+            (btn.selected ? 1 : 0.7) +
+            ')'
+          "
         >
-          {{ option }}
+          {{ btn.option }}
         </mat-radio-button>
       </mat-radio-group>
     </div>

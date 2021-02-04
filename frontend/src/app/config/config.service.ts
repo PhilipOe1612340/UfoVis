@@ -3,12 +3,12 @@ import { environment } from 'src/environments/environment';
 
 const debug = !environment.production;
 
-export type ConfigSetting = "showMarkers" | "configIsShown" | "startYear" | "stopYear" | "displayShape" | "aggregate";
+export type ConfigSetting = "showMarkers" | "configIsShown" | "startYear" | "stopYear" | "displayShape";
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-  private readonly config: { [key in ConfigSetting]: any } = { showMarkers: false, configIsShown: false, startYear: 2006, stopYear: 2021, displayShape: "*", aggregate: true };
+  private readonly config: { [key in ConfigSetting]: any } = { showMarkers: false, configIsShown: false, startYear: 2006, stopYear: 2021, displayShape: "*" };
   private subscribers: { type: string, fn: (newVal: any) => void }[] = [];
 
   constructor() { }

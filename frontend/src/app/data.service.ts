@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { interpolateSpectral, quantize, scaleOrdinal, ScaleOrdinal } from 'd3';
 import { environment } from 'src/environments/environment';
 import { GeoObj } from './ufo-map/ufo-map.component';
 
@@ -30,6 +31,7 @@ export class DataService {
   private data: GeoObj[] = [];
   private shapes: string[] = [];
   private airports: Airport[] = [];
+  public colorScale!: ScaleOrdinal<string, string, never>;
 
   constructor(private http: HttpClient) { }
 
@@ -40,10 +42,16 @@ export class DataService {
     const shapes = await this.http.get<string[]>(environment.server + "shapes").toPromise();
     const shapeBlacklist = ["Unknown", "Other"];
     this.shapes = shapes.filter(s => !!s && !shapeBlacklist.includes(s));
+
+    this.colorScale = scaleOrdinal()
+      .domain(shapes)
+      .range(quantize(t => interpolateSpectral(t), shapes.length).reverse()) as ScaleOrdinal<string, string, never>
+
     return this.shapes;
   }
 
-  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean, aggregate?: boolean } = {}): Promise<GeoObj[]> {
+
+  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean } = {}): Promise<GeoObj[]> {
     if (this.data.length > 0 && !options.forceFetch) {
       return this.data;
     }
@@ -56,12 +64,11 @@ export class DataService {
     }
 
     const data = await this.http.get<GeoObj[]>(environment.server + 'reports', { params }).toPromise();
-    this.data = data;
-    return this.data;
+    return this.data = data;
   }
 
   async getAirports(): Promise<Airport[]> {
-    this.airports = await this.http.get<Airport[]>(environment.server + 'airports', { }).toPromise();
+    this.airports = await this.http.get<Airport[]>(environment.server + 'airports', {}).toPromise();
     return this.airports;
   }
 }

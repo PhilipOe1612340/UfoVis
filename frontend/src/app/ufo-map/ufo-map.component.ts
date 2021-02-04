@@ -5,6 +5,7 @@ import "leaflet.markercluster";
 import { ConfigService } from '../config/config.service';
 import * as d3 from "d3";
 import { Geometry, Feature, Point } from 'geojson';
+import { ScaleLinear, ScaleOrdinal } from 'd3';
 
 
 export type GeoObj = Feature<Point | Geometry, Report>
@@ -70,7 +71,7 @@ export interface Coordinate {
   templateUrl: './ufo-map.component.html',
   styleUrls: ['./ufo-map.component.scss']
 })
-export class UfoMapComponent implements OnInit, AfterViewInit {
+export class UfoMapComponent implements OnInit {
 
   public options = {
     layers: [
@@ -102,45 +103,43 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
 
   private data: GeoObj[] = [];
   private legendCanvas = document.createElement('canvas');
-  private colorScale: any;
-
-  rmax = 30; //Maximum radius for cluster pies
+  private sizeRange!: ScaleLinear<number, number, never>;
+  maxClusterRadius = 30;
 
   constructor(private service: DataService, public config: ConfigService) {
   }
 
-
   async ngOnInit(): Promise<void> {
     this.airport_data = await this.service.getAirports();
     this.data = await this.service.getData();
-    const shapes = Array.from(this.filterShapes(this.data).keys());
-    this.colorScale = d3.scaleOrdinal()
-      .domain(shapes)
-      .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), shapes.length).reverse())
 
-    this.airport_overlay();
+    const map = this.filterShapes(this.data)
+    const shapes = Array.from(map.keys());
+
+    const max = Math.max(...Array.from(map.values()).map(val => val.length));
+    this.sizeRange = d3.scaleLinear().domain([0, max]).range([22, 40]).clamp(true);
+
+    this.registerPieOverlay();
 
     this.config.registerListener("showMarkers", () => this.repaint(), false);
     this.config.registerListener("startYear", () => this.repaint(true), false);
     this.config.registerListener("stopYear", () => this.repaint(true), false);
     this.config.registerListener("displayShape", () => this.repaint(true), false);
-    this.config.registerListener("aggregate", () => this.repaint(true), false);
     this.repaint();
+
+    this.legendCanvas.width = 100;
+    this.legendCanvas.height = 10;
   }
 
   defineClusterIcon(cluster: L.MarkerCluster) {
     const children = cluster.getAllChildMarkers()
-    const n = children.length //Get number of markers in cluster
-    const strokeWidth = 1 //Set clusterpie stroke width
-    const r = this.rmax - 2 * strokeWidth - (n < 10 ? 12 : n < 100 ? 8 : n < 1000 ? 4 : 0) //Calculate clusterpie radius...
-    const iconDim = (r + strokeWidth) * 2 //...and divIcon dimensions (leaflet really want to know the size)
+    const strokeWidth = 1.5;
+    const radius = this.sizeRange(children.length);
+    const iconDim = (radius + strokeWidth) * 2
 
+    const shapes = this.filterShapes(children.map((c: any) => ({ properties: c.feature!.geometry.properties } as GeoObj)))
+    const html = this.createPieChartMarkup(shapes, radius, strokeWidth);
 
-    const map = this.filterShapes(children.map((c: any) => ({ properties: c.feature!.geometry.properties } as GeoObj)))
-
-    //bake some svg markup
-    const html = this.bakeThePie(map);
-    //Create a new divIcon and assign the svg markup to the html property
     return new L.DivIcon({
       html,
       className: 'marker-cluster',
@@ -148,37 +147,35 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /*function that generates a svg markup for the pie chart*/
-  bakeThePie(data: Map<string, any[]>) {
-
+  createPieChartMarkup(data: Map<string, any[]>, radius: number, strokeWidth: number) {
     const mappedData = Array.from(data.entries()).map(([key, value]) => ({ value: value.length, key }))
-    const radius = 28;
-    const strokeWidth = 2;
 
     const svg = document.createElementNS("http://www.w3.org/1999/xhtml", 'svg');
-    const origo = (radius + strokeWidth)
-    const pie = d3.pie<any, { value: number, key: string }>().value((d: any) => d.value)
+    const origin = radius + strokeWidth;
+    const pie = d3.pie<any, { value: number, key: string }>().value((d: any) => d.value)//.sort((a, b) => a.key.localeCompare(b.key))
     const arc = d3.arc()
-      .innerRadius(18)
+      .innerRadius(0)
       .outerRadius(radius)
 
-    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     d3.select(svg)
       .selectAll('path')
       .data(pie(mappedData))
       .enter()
       .append('path')
       .attr('d', arc as any)
-      .attr('fill', d => this.colorScale(d.data.key))
+      .attr('fill', d => this.service.colorScale(d.data.key))
       .attr("stroke", "black")
       .style("stroke-width", strokeWidth + "px")
-      .attr('transform', 'translate(' + origo + ',' + origo + ')');
+      .attr('transform', 'translate(' + origin + ',' + origin + ')');
 
     //Return the svg-markup rather than the actual element
     return this.serializeXmlNode(svg);
   }
 
-
+  /**
+   * Transform native HTML Element to a HTML string
+   * @param xmlNode 
+   */
   serializeXmlNode(xmlNode: any) {
     if (typeof window.XMLSerializer != "undefined") {
       return (new window.XMLSerializer()).serializeToString(xmlNode);
@@ -188,13 +185,6 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     return "";
   }
 
-
-
-
-  ngAfterViewInit(): void {
-    this.legendCanvas.width = 100;
-    this.legendCanvas.height = 10;
-  }
 
   markerClusterReady(group: L.MarkerClusterGroup) {
     this.markerClusterGroup = group;
@@ -212,7 +202,6 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   private async repaint(changed = false) {
     const show = this.config.getSetting('showMarkers');
     const shape = this.config.getSetting("displayShape");
-    const aggregate = this.config.getSetting("aggregate");
 
     this.data = await this.service.getData({
       params: {
@@ -220,9 +209,10 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         toYear: this.config.getSetting("stopYear"),
         shape: shape === "*" ? undefined : shape,
         limit: show ? '1000' : '10000',
-      }, forceFetch: changed, aggregate
-    })
-    // this.showHeatmap();
+      }, forceFetch: changed
+    });
+
+    this.registerPieOverlay();
   }
 
   public showHeatmap() {
@@ -264,10 +254,10 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   }
 
   public get showLegend() {
-    return !this.config.getSetting('showMarkers') || !this.config.getSetting('aggregate');
+    return !this.config.getSetting('showMarkers');
   }
 
-  private airport_overlay() {
+  private registerPieOverlay() {
     const markerOptions = {
       icon: L.icon({
         iconSize: [25, 41],
@@ -276,24 +266,20 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         shadowUrl: 'assets/marker-shadow.png'
       })
     };
-    const layer = L.geoJSON(/* {
-      type: "FeatureCollection",
-      features: 
-    } as any */
+    const layer = L.geoJSON(
       this.data as any, {
       pointToLayer: (geo: GeoObj, latlng) => {
         return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.description} – ${geo.properties.date}`)
       }
     });
-
+    this.markerClusterGroup.clearLayers();
     this.markerClusterGroup.addLayer(layer);
 
     this.layersControl = {
       overlays: {
-        'airports': layer
+        'reports': this.markerClusterGroup
       }
     };
-    this.layers = [this.markerClusterGroup as any]
   }
 }
 
