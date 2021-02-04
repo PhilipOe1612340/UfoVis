@@ -91,7 +91,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
   private icon_size_variable: number = 25;
 
   public markerClusterOptions: L.MarkerClusterGroupOptions = {
-    iconCreateFunction: this.defineClusterIcon,
+    iconCreateFunction: (c) => this.defineClusterIcon(c),
     // disableClusteringAtZoom: 9
   }
   public markerClusterGroup!: L.MarkerClusterGroup;
@@ -102,12 +102,31 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
 
   private data: GeoObj[] = [];
   private legendCanvas = document.createElement('canvas');
+  private colorScale: any;
 
   rmax = 30; //Maximum radius for cluster pies
 
   constructor(private service: DataService, public config: ConfigService) {
   }
 
+
+  async ngOnInit(): Promise<void> {
+    this.airport_data = await this.service.getAirports();
+    this.data = await this.service.getData();
+    const shapes = Array.from(this.filterShapes(this.data).keys());
+    this.colorScale = d3.scaleOrdinal()
+      .domain(shapes)
+      .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), shapes.length).reverse())
+
+    this.airport_overlay();
+
+    this.config.registerListener("showMarkers", () => this.repaint(), false);
+    this.config.registerListener("startYear", () => this.repaint(true), false);
+    this.config.registerListener("stopYear", () => this.repaint(true), false);
+    this.config.registerListener("displayShape", () => this.repaint(true), false);
+    this.config.registerListener("aggregate", () => this.repaint(true), false);
+    this.repaint();
+  }
 
   defineClusterIcon(cluster: L.MarkerCluster) {
     const children = cluster.getAllChildMarkers()
@@ -117,51 +136,43 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     const iconDim = (r + strokeWidth) * 2 //...and divIcon dimensions (leaflet really want to know the size)
 
 
-    const data: { [key: string]: any[] } = {};
-    children.forEach((c: ReportMarker) => {
-      const shape = c.feature!.properties.shape ?? {};
-      if (!data[shape]) {
-        data[shape] = []
-      }
-      data[shape].push(c)
-    });
-
+    const map = this.filterShapes(children.map((c: any) => ({ properties: c.feature!.geometry.properties } as GeoObj)))
 
     //bake some svg markup
-    const html = this.bakeThePie(data);
-    debugger
+    const html = this.bakeThePie(map);
     //Create a new divIcon and assign the svg markup to the html property
     return new L.DivIcon({
-      html: `<span>This is a test marker</span>`,
+      html,
       className: 'marker-cluster',
       iconSize: new L.Point(iconDim, iconDim)
     });
   }
 
   /*function that generates a svg markup for the pie chart*/
-  bakeThePie(data: { [key: string]: any[] }) {
-    const r = 28 //Default outer radius = 28px
-    const strokeWidth = 1 //Default stroke is 1
-    const origo = (r + strokeWidth) //Center coordinate
+  bakeThePie(data: Map<string, any[]>) {
 
-    //Create an svg element
-    var svg = document.createElementNS("http://www.w3.org/1999/xhtml", 'svg');
+    const mappedData = Array.from(data.entries()).map(([key, value]) => ({ value: value.length, key }))
+    const radius = 28;
+    const strokeWidth = 2;
 
-    //Create the pie chart
-    const mappedData = Object.keys(data).map((key) => ({ valueOf: () => data[key].length }));
-    var pie = d3.pie().value(d => d.valueOf())
-    var data_ready = pie(mappedData);
+    const svg = document.createElementNS("http://www.w3.org/1999/xhtml", 'svg');
+    const origo = (radius + strokeWidth)
+    const pie = d3.pie<any, { value: number, key: string }>().value((d: any) => d.value)
+    const arc = d3.arc()
+      .innerRadius(18)
+      .outerRadius(radius)
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     d3.select(svg)
       .selectAll('path')
-      .data(data_ready)
+      .data(pie(mappedData))
       .enter()
       .append('path')
-      .attr('d', d3.arc().innerRadius(18).outerRadius(28) as any)
-      .attr('fill', function (d) { return '' })
+      .attr('d', arc as any)
+      .attr('fill', d => this.colorScale(d.data.key))
       .attr("stroke", "black")
-      .style("stroke-width", "2px")
+      .style("stroke-width", strokeWidth + "px")
+      .attr('transform', 'translate(' + origo + ',' + origo + ')');
 
     //Return the svg-markup rather than the actual element
     return this.serializeXmlNode(svg);
@@ -189,24 +200,13 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
     this.markerClusterGroup = group;
   }
 
-  async ngOnInit(): Promise<void> {
-    this.airport_data = await this.service.getAirports();
-
-
-    this.airport_overlay();
-    this.layersControl = {
-      overlays: {
-        'airports': this.markerClusterGroup
-      }
-    };
-
-
-    this.config.registerListener("showMarkers", () => this.repaint(), false);
-    this.config.registerListener("startYear", () => this.repaint(true), false);
-    this.config.registerListener("stopYear", () => this.repaint(true), false);
-    this.config.registerListener("displayShape", () => this.repaint(true), false);
-    this.config.registerListener("aggregate", () => this.repaint(true), false);
-    this.repaint();
+  private filterShapes(data: GeoObj[]) {
+    const map = new Map<string, any[]>();
+    data.forEach((c) => {
+      const shape = c.properties.shape ?? 'Unknown';
+      map.set(shape, (map.get(shape) ?? []).concat([c]));
+    });
+    return map;
   }
 
   private async repaint(changed = false) {
@@ -222,7 +222,7 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         limit: show ? '1000' : '10000',
       }, forceFetch: changed, aggregate
     })
-    this.showHeatmap();
+    // this.showHeatmap();
   }
 
   public showHeatmap() {
@@ -276,17 +276,24 @@ export class UfoMapComponent implements OnInit, AfterViewInit {
         shadowUrl: 'assets/marker-shadow.png'
       })
     };
-    const layer = L.geoJSON({
+    const layer = L.geoJSON(/* {
       type: "FeatureCollection",
-      features: this.data
-    } as any, {
+      features: 
+    } as any */
+      this.data as any, {
       pointToLayer: (geo: GeoObj, latlng) => {
         return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.description} – ${geo.properties.date}`)
       }
     });
 
     this.markerClusterGroup.addLayer(layer);
-    debugger
+
+    this.layersControl = {
+      overlays: {
+        'airports': layer
+      }
+    };
+    this.layers = [this.markerClusterGroup as any]
   }
 }
 
