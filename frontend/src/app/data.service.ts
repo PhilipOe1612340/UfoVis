@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { interpolateSpectral, quantize, scaleOrdinal, ScaleOrdinal } from 'd3';
 import { environment } from 'src/environments/environment';
-import { GeoObj } from './ufo-map/ufo-map.component';
+import { GeoObj, GeoObjAirport } from './ufo-map/ufo-map.component';
 
 export interface Report {
   latitude: number,
@@ -30,7 +30,7 @@ export interface Airport {
 export class DataService {
   private data: GeoObj[] = [];
   private shapes: string[] = [];
-  private airports: Airport[] = [];
+  private airport_data: GeoObjAirport[] = [];
   public colorScale!: ScaleOrdinal<string, string, never>;
 
   constructor(private http: HttpClient) { }
@@ -67,8 +67,8 @@ export class DataService {
     return this.data = data;
   }
 
-  async getAirports(): Promise<Airport[]> {
-    this.airports = await this.http.get<Airport[]>(environment.server + 'airports', {}).toPromise();
-    return this.airports;
+  async getAirports(): Promise<GeoObjAirport[]> {
+    this.airport_data = await this.http.get<GeoObjAirport[]>(environment.server + 'airports', {}).toPromise();
+    return this.airport_data;
   }
 }

@@ -11,6 +11,8 @@ import { ScaleLinear, ScaleOrdinal } from 'd3';
 export type GeoObj = Feature<Point | Geometry, Report>
 export type ReportMarker = L.Marker<Report>;
 
+export type GeoObjAirport = Feature<Point | Geometry, Airport>
+
 declare var HeatmapOverlay: any;
 
 /**
@@ -88,7 +90,7 @@ export class UfoMapComponent implements OnInit {
   public layers: L.Marker[] = [];
 
   public layersControl: any;
-  private airport_data: Airport[] = [];
+  private airport_data: GeoObjAirport[] = [];
   private icon_size_variable: number = 25;
 
   public markerClusterOptions: L.MarkerClusterGroupOptions = {
@@ -105,6 +107,8 @@ export class UfoMapComponent implements OnInit {
   private legendCanvas = document.createElement('canvas');
   private sizeRange!: ScaleLinear<number, number, never>;
   maxClusterRadius = 30;
+
+  private boolean_test_changer = true;
 
   constructor(private service: DataService, public config: ConfigService) {
   }
@@ -137,8 +141,10 @@ export class UfoMapComponent implements OnInit {
     const radius = this.sizeRange(children.length);
     const iconDim = (radius + strokeWidth) * 2
 
+    const airport_types = this.filterAirports(children.map((c: any) => ({ properties: c.feature!.geometry.properties } as GeoObjAirport)));
+
     const shapes = this.filterShapes(children.map((c: any) => ({ properties: c.feature!.geometry.properties } as GeoObj)))
-    const html = this.createPieChartMarkup(shapes, radius, strokeWidth);
+    const html = this.createPieChartMarkup(shapes, airport_types, radius, strokeWidth);
 
     return new L.DivIcon({
       html,
@@ -147,26 +153,72 @@ export class UfoMapComponent implements OnInit {
     });
   }
 
-  createPieChartMarkup(data: Map<string, any[]>, radius: number, strokeWidth: number) {
+  createPieChartMarkup(data: Map<string, any[]>, airport_map: Map<string, any[]>, radius: number, strokeWidth: number) {
     const mappedData = Array.from(data.entries()).map(([key, value]) => ({ value: value.length, key }))
+    const mappedDataAir = Array.from(airport_map.entries()).map(([key, value]) => ({ value: value.length, key }))
 
     const svg = document.createElementNS("http://www.w3.org/1999/xhtml", 'svg');
     const origin = radius + strokeWidth;
     const pie = d3.pie<any, { value: number, key: string }>().value((d: any) => d.value)//.sort((a, b) => a.key.localeCompare(b.key))
     const arc = d3.arc()
-      .innerRadius(0)
+      // .innerRadius(0)
+      .innerRadius(radius / 2)
       .outerRadius(radius)
 
-    d3.select(svg)
+    const g = d3.select(svg)
       .selectAll('path')
       .data(pie(mappedData))
       .enter()
-      .append('path')
+      .append('g');
+
+    g.append('path')
       .attr('d', arc as any)
       .attr('fill', d => this.service.colorScale(d.data.key))
       .attr("stroke", "black")
       .style("stroke-width", strokeWidth + "px")
       .attr('transform', 'translate(' + origin + ',' + origin + ')');
+
+    if (mappedDataAir.length !== 0) {
+        //remove if-else and choose whether to show circle or piechart, remove variable boolean_test_changer
+        //number of airports
+        if (this.boolean_test_changer) {
+          let number = 0;
+          mappedDataAir.forEach((ele) => {
+            number += ele.value;
+          });
+
+          g.append('circle')
+            .attr('cx', origin)
+            .attr('cy', origin)
+            .attr('r', (radius - strokeWidth) / 2)
+            .style('fill', '#d9cafe');
+
+          g.append('text')
+            .attr('x', origin)
+            .attr('y', origin - 5) // text 10 pixel, align in middle: / 2 => 10 / 2 = 5
+            .attr('text-anchor', 'middle')
+            .attr('dy', '10px')
+            .text(number);
+          this.boolean_test_changer = false;
+        } else {
+          //piechart
+          const arc2 = d3.arc()
+            .innerRadius(0)
+            .outerRadius(radius / 2)
+
+          const g_inner = g.append('g')
+            .selectAll('path')
+            .data(pie(mappedDataAir))
+            .enter();
+          g_inner.append('path')
+            .attr('d', arc2 as any)
+            .attr('fill', d => this.airport_pie_color(d.data.key))
+            .attr("stroke", "black")
+            .style("stroke-width", strokeWidth + "px")
+            .attr('transform', 'translate(' + origin + ',' + origin + ')');
+          this.boolean_test_changer = true;
+        }
+    }
 
     //Return the svg-markup rather than the actual element
     return this.serializeXmlNode(svg);
@@ -193,8 +245,21 @@ export class UfoMapComponent implements OnInit {
   private filterShapes(data: GeoObj[]) {
     const map = new Map<string, any[]>();
     data.forEach((c) => {
-      const shape = c.properties.shape ?? 'Unknown';
-      map.set(shape, (map.get(shape) ?? []).concat([c]));
+      if(c.properties.shape !== undefined){
+        const shape = c.properties.shape ?? 'Unknown';
+        map.set(shape, (map.get(shape) ?? []).concat([c]));
+      }
+    });
+    return map;
+  }
+
+  private filterAirports(data: GeoObjAirport[]) {
+    const map = new Map<string, any[]>();
+    data.forEach((c) => {
+      if(c.properties.type_size !== undefined) {
+        const type = c.properties.type_size ?? 'Unknown';
+        map.set(type, (map.get(type) ?? []).concat([c]));
+      }
     });
     return map;
   }
@@ -272,8 +337,18 @@ export class UfoMapComponent implements OnInit {
         return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.description} – ${geo.properties.date}`)
       }
     });
+
+    const airport_layer = L.geoJSON(
+      this.airport_data as any, {
+      pointToLayer: (geo: GeoObjAirport, latlng) => {
+        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.country_code} – ${geo.properties.name}`)
+      }
+    });
+
+
     this.markerClusterGroup.clearLayers();
     this.markerClusterGroup.addLayer(layer);
+    this.markerClusterGroup.addLayer(airport_layer);
 
     this.layersControl = {
       overlays: {
@@ -281,18 +356,24 @@ export class UfoMapComponent implements OnInit {
       }
     };
   }
+
+  private airport_pie_color(type: String) {
+    switch (type) {
+      case 'small_airport':
+        return '#377eb8';
+        break;
+      case 'medium_airport':
+        return '#4daf4a';
+        break;
+      case 'heliport':
+        return '#ff7f00'
+        break;
+      case 'baloonport':
+        return '#a65628';
+        break;
+      default:
+        return '#984ea3';
+        break;
+    }
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -33,8 +33,14 @@ class Airport(Base):
     def row_to_dict(row):
         import json
         row_dict = row._asdict()
+        row_dict["id"] = row.id
+        row_dict["iata_code"] = row.iata_code
+        row_dict["name"] = row.name
+        row_dict["elevation_ft"] = row.elevation_ft
+        row_dict["country_code"] = row.country_code
+        row_dict["type_size"] = row.type_size
+
         geo_dict = json.loads(row_dict["geojson"])
         del row_dict["geojson"]
-        row_dict["latitude"] = geo_dict["coordinates"][1]
-        row_dict["longitude"] = geo_dict["coordinates"][0]
-        return row_dict
+        geo_dict["properties"] = row_dict
+        return geo_dict
