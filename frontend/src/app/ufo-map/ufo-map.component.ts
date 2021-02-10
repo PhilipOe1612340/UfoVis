@@ -108,8 +108,6 @@ export class UfoMapComponent implements OnInit {
   private sizeRange!: ScaleLinear<number, number, never>;
   maxClusterRadius = 30;
 
-  private boolean_test_changer = true;
-
   constructor(private service: DataService, public config: ConfigService) {
   }
 
@@ -179,45 +177,32 @@ export class UfoMapComponent implements OnInit {
       .attr('transform', 'translate(' + origin + ',' + origin + ')');
 
     if (mappedDataAir.length !== 0) {
-        //remove if-else and choose whether to show circle or piechart, remove variable boolean_test_changer
-        //number of airports
-        if (this.boolean_test_changer) {
-          let number = 0;
-          mappedDataAir.forEach((ele) => {
-            number += ele.value;
-          });
-
-          g.append('circle')
-            .attr('cx', origin)
-            .attr('cy', origin)
-            .attr('r', (radius - strokeWidth) / 2)
-            .style('fill', '#d9cafe');
-
-          g.append('text')
-            .attr('x', origin)
-            .attr('y', origin - 5) // text 10 pixel, align in middle: / 2 => 10 / 2 = 5
-            .attr('text-anchor', 'middle')
-            .attr('dy', '10px')
-            .text(number);
-          this.boolean_test_changer = false;
-        } else {
-          //piechart
-          const arc2 = d3.arc()
+      const arc_inner = d3.arc()
             .innerRadius(0)
-            .outerRadius(radius / 2)
-
-          const g_inner = g.append('g')
-            .selectAll('path')
-            .data(pie(mappedDataAir))
-            .enter();
-          g_inner.append('path')
-            .attr('d', arc2 as any)
-            .attr('fill', d => this.airport_pie_color(d.data.key))
-            .attr("stroke", "black")
-            .style("stroke-width", strokeWidth + "px")
-            .attr('transform', 'translate(' + origin + ',' + origin + ')');
-          this.boolean_test_changer = true;
-        }
+            .outerRadius(radius / 2);
+      if (mappedData.length !== 0) {
+        const g_inner = g.append('g')
+          .selectAll('path')
+          .data(pie(mappedDataAir))
+          .enter();
+        g_inner.append('path')
+          .attr('d', arc_inner as any)
+          .attr('fill', d => this.airport_pie_color(d.data.key))
+          .attr("stroke", "black")
+          .style("stroke-width", strokeWidth + "px")
+          .attr('transform', 'translate(' + origin + ',' + origin + ')');
+      } else {
+        const g_inner = d3.select(svg)
+          .selectAll('path')
+          .data(pie(mappedDataAir))
+          .enter();
+        g_inner.append('path')
+          .attr('d', arc_inner as any)
+          .attr('fill', d => this.airport_pie_color(d.data.key))
+          .attr("stroke", "black")
+          .style("stroke-width", strokeWidth + "px")
+          .attr('transform', 'translate(' + origin + ',' + origin + ')');
+      }
     }
 
     //Return the svg-markup rather than the actual element
@@ -338,12 +323,7 @@ export class UfoMapComponent implements OnInit {
       }
     });
 
-    const airport_layer = L.geoJSON(
-      this.airport_data as any, {
-      pointToLayer: (geo: GeoObjAirport, latlng) => {
-        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.country_code} – ${geo.properties.name}`)
-      }
-    });
+    const airport_layer = this.add_airport_symbols();
 
 
     this.markerClusterGroup.clearLayers();
@@ -371,9 +351,86 @@ export class UfoMapComponent implements OnInit {
       case 'baloonport':
         return '#a65628';
         break;
+      case 'seaplane_base':
+        return '#ffff33';
+        break;
       default:
         return '#984ea3';
         break;
     }
+  }
+
+  private add_airport_symbols() {
+    const helipad_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 41],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_heliport.png'
+      })
+    };
+    const small_airport_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 33],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_small_airport.png'
+      })
+    };
+    const medium_airport_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 33],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_medium_airport.png'
+      })
+    };
+    const large_airport_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 33],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_large_airport.png'
+      })
+    };
+    const balloon_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 33],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_balloonport.png'
+      })
+    };
+    const seaplane_icon_options = {
+      icon: L.icon({
+        iconSize: [25, 33],
+        iconAnchor: [0, 0],
+        iconUrl: 'assets/Icon/icon_seaplane_base.png'
+      })
+    };
+
+    const airport_layer = L.geoJSON(
+      this.airport_data as any, {
+      pointToLayer: (geo: GeoObjAirport, latlng) => {
+        let icon;
+        switch (geo.properties.type_size) {
+          case 'small_airport':
+            icon = small_airport_icon_options;
+            break;
+          case 'medium_airport':
+            icon = medium_airport_icon_options;
+            break;
+          case 'heliport':
+            icon = helipad_icon_options;
+            break;
+          case 'balloonport':
+            icon = balloon_icon_options;
+            break;
+          case 'seaplane_base':
+            icon = seaplane_icon_options;
+            break;
+          default:
+            icon = large_airport_icon_options;
+            break;
+        }
+        return L.marker(latlng, icon).bindPopup(`${geo.properties.name} - ${geo.properties.country_code}`)
+      }
+    });
+    return airport_layer;
   }
 }
