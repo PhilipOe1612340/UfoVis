@@ -249,7 +249,7 @@ export class UfoMapComponent implements OnInit {
       icon: L.icon({
         iconSize: [25, 41],
         iconAnchor: [13, 41],
-        iconUrl: 'assets/marker-icon.png',
+        iconUrl: 'assets/Icon/ufo.png',
         shadowUrl: 'assets/marker-shadow.png'
       })
     };
