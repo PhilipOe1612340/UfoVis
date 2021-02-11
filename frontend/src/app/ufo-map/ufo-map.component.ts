@@ -68,7 +68,7 @@ export class UfoMapComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.airport_data = await this.service.getAirports({ params: { limit: 2000 } });
+    this.airport_data = await this.service.getAirports({ params: { limit: 10000 } });
     this.data = await this.service.getData();
 
     const map = this.filterShapes(this.data)
@@ -213,7 +213,7 @@ export class UfoMapComponent implements OnInit {
         fromYear: this.config.getSetting("startYear"),
         toYear: this.config.getSetting("stopYear"),
         shape: isEqual(shape, ['*']) ? undefined : shape.join(','),
-        limit: 2000,
+        limit: 10000,
       }, forceFetch: changed
     });
 
