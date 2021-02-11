@@ -15,7 +15,7 @@ export enum AirportType {
   SmallAirport = 'small_airport',
   MediumAirport = 'medium_airport',
   Heliport = 'heliport',
-  Baloonport = 'baloonport',
+  Balloonport = 'balloonport',
   SeaplaneBase = 'seaplane_base',
 }
 
@@ -281,7 +281,7 @@ export class UfoMapComponent implements OnInit {
         return '#4daf4a';
       case AirportType.Heliport:
         return '#ff7f00'
-      case AirportType.Baloonport:
+      case AirportType.Balloonport:
         return '#a65628';
       case AirportType.SeaplaneBase:
         return '#ffff33';
@@ -296,7 +296,7 @@ export class UfoMapComponent implements OnInit {
         return 'assets/Icon/icon_small_airport.png';
       case AirportType.MediumAirport:
         return 'assets/Icon/icon_medium_airport.png';
-      case AirportType.Baloonport:
+      case AirportType.Balloonport:
         return 'assets/Icon/icon_balloonport.png';
       case AirportType.SeaplaneBase:
         return 'assets/Icon/icon_seaplane_base.png';
