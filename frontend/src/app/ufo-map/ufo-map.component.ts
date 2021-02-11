@@ -258,7 +258,7 @@ export class UfoMapComponent implements OnInit {
         fromYear: this.config.getSetting("startYear"),
         toYear: this.config.getSetting("stopYear"),
         shape: shape === "*" ? undefined : shape,
-        limit: '10000',
+        limit: '5000',
       }, forceFetch: changed
     });
 
@@ -272,7 +272,6 @@ export class UfoMapComponent implements OnInit {
     this.legend = shapes.map(([key, rep]) => {
       return { key, reports: rep.map((rep: any) => rep.properties) }
     });
-    console.log(this.legend)
     this.cdr.detectChanges();
   }
 

@@ -7,11 +7,13 @@ div {
   margin: 5px 10px 0 0;
   border: 1px solid gray;
   padding: 10px;
+  border-radius: 5px;
 }
 
 span:first-child {
   flex: 1 1 100%;
   min-width: 100%;
+  color: black;
 }
 
 span:not(:first-child) {
