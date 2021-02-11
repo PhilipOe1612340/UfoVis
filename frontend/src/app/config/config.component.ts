@@ -26,7 +26,8 @@ export class ConfigComponent implements OnInit {
 
   async ngOnInit() {
     const config: Setting[] = [
-      { key: "showMarkers", type: "boolean", val: false, readable: "Display data as individual markers" },
+      { key: "showAirportData", type: "boolean", val: true, readable: "Display airport data" },
+      { key: "sortPieCharts", type: "boolean", val: false, readable: "Keep pie chart order constant" },
     ];
     const shapes = await this.service.getShapes();
     const shapeConfig: Setting<string> = {

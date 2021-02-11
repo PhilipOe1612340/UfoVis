@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { interpolateSpectral, quantize, scaleOrdinal, ScaleOrdinal } from 'd3';
 import { environment } from 'src/environments/environment';
-import { GeoObj, GeoObjAirport } from './ufo-map/ufo-map.component';
+import { AirportType, GeoObj, GeoObjAirport } from './ufo-map/ufo-map.component';
 
 export interface Report {
   latitude: number,
@@ -20,7 +20,7 @@ export interface Airport {
   name: string,
   elevation: number,
   country_code: string,
-  type_size: string,
+  type_size: AirportType,
 }
 
 
