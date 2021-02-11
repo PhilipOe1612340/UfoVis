@@ -1,5 +1,5 @@
-<div [style]="'background:' + color">
+<div>
   <span>{{ data.description }}</span>
-  <span>{{ data.duration }}s</span>
+  <span>{{ !!data.duration ? data.duration : 0 }}s</span>
   <span>{{ format(data.date) }}</span>
 </div>

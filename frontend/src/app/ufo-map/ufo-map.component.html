@@ -1,6 +1,9 @@
 <div id="legend">
   <mat-accordion *ngIf="legend.length >= 0">
-    <mat-expansion-panel *ngFor="let shape of legend; trackBy: trackShape">
+    <mat-expansion-panel
+      [btnColor]="service.colorScale(shape.key)"
+      *ngFor="let shape of legend; trackBy: trackShape"
+    >
       <mat-expansion-panel-header>
         <mat-panel-title> {{ shape.key }}</mat-panel-title>
         <mat-panel-description>
@@ -12,7 +15,6 @@
           <ufo-report
             *ngFor="let report of shape.reports"
             [data]="report"
-            [color]="service.colorScale(shape.key)"
           ></ufo-report>
         </div>
       </ng-template>

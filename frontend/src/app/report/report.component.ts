@@ -8,7 +8,6 @@ import { Report } from '../data.service';
 })
 export class ReportComponent implements OnInit {
   @Input() data!: Report;
-  @Input('color') color!: string;
 
   constructor() { }
 

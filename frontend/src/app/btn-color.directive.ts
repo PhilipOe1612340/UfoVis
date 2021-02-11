@@ -8,11 +8,15 @@ export class BtnColorDirective {
 
 
   @HostBinding('style.background-color')
-  backgroundColor: string = `rgb(${this.btnColor})`;
+  backgroundColor: string = this.format(this.btnColor);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.btnColor) {
-      this.backgroundColor = `rgb(${this.btnColor})`;
+      this.backgroundColor = this.format(this.btnColor);
     }
+  }
+
+  private format(col: string = ""){
+    return col.includes('rgb') ? col : `rgb(${col})`
   }
 }

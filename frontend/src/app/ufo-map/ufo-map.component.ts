@@ -212,7 +212,7 @@ export class UfoMapComponent implements OnInit {
         fromYear: this.config.getSetting("startYear"),
         toYear: this.config.getSetting("stopYear"),
         shape: isEqual(shape, ['*']) ? undefined : shape.join(','),
-        limit: 5000,
+        limit: 2000,
       }, forceFetch: changed
     });
 
