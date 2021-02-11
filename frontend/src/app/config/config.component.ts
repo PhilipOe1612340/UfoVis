@@ -3,7 +3,7 @@ import { MatRadioChange } from '@angular/material/radio';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DataService } from '../data.service';
 import { ConfigService, ConfigSetting } from './config.service';
-import { isEqual } from 'underscore';
+
 interface Setting<T = any> {
   key: ConfigSetting;
   type: string;

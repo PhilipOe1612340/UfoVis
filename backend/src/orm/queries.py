@@ -15,7 +15,9 @@ def handleFilters(query: Query, request_params: ImmutableDict)-> Query:
     if toYear:
         query = query.filter(Report.date <= year_to_date(toYear))
     if shape:
-        query = query.filter(func.upper(Report.shape) == shape.upper())
+        shapelist = shape.split(",")
+        shapelist = [shape.strip().upper() for shape in shapelist]
+        query = query.filter(func.upper(Report.shape).in_(shapelist))
     return query
 
 
