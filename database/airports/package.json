@@ -1,1 +1,10 @@
-{"name":"my-project","version":"1.0.0","dependencies":{"axios":"0.21.1","csv-string":"4.0.1","pg":"8.5.1","progress":"2.0.3"}}
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "0.21.1",
+    "csv-string": "4.0.1",
+    "pg": "8.5.1",
+    "progress": "2.0.3"
+  }
+}

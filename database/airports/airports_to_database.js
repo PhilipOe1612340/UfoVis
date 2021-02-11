@@ -67,7 +67,7 @@ function response_data_to_csv(response_data_string) {
             if (data_sub_array[index] === '' || data_sub_array[index] === undefined) {
                 data_sub_array[index] = null;
             } else {
-                data_sub_array[index] = data_sub_array[index].replaceAll(`'`, `''`)
+                data_sub_array[index] = data_sub_array[index].replace(/'/g, `''`)
             }
         });
         if (data_sub_array[index_to_key[7]] === undefined) {
