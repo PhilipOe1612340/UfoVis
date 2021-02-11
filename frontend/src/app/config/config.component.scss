@@ -21,7 +21,8 @@ button#expand {
   left: 0px;
   top: 0px;
   z-index: 10000;
-  background: white;
+  background: black;
+  color: lightblue;
   padding: 50px 0 0 40px;
   box-shadow: 11px 1px 16px #02020217;
 }
@@ -42,12 +43,17 @@ button#expand {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: lightgray;
+  background: #313131;
+  color: white;
   padding: 5px 7px;
   margin-right: 20px;
   margin-bottom: 15px;
   border-radius: 5px;
   flex-wrap: wrap;
+}
+
+.gray {
+  filter: saturate(0.7);
 }
 
 .list-label {
@@ -58,8 +64,18 @@ button#expand {
 .list-element {
   display: flex;
   flex-direction: column;
+  flex: 2 1 10%;
 }
 
-mat-radio-button {
-  display: inline;
+mat-slide-toggle {
+  display: block;
+  width: 100%;
+  padding: 2px 5px;
+  border-radius: 5px;
+  transition: background 0.3s;
+  text-shadow: 0px 0px 5px #000000c2;
+}
+
+mat-slide-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.274);
 }

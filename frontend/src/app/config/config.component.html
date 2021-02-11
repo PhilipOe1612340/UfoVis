@@ -2,16 +2,30 @@
   <h1>Settings</h1>
   <button id="close" (click)="toggleExpand()">x</button>
 
-  <div class="list-header" *ngFor="let key of keys">
+  <div class="list-header" *ngFor="let key of keys; trackBy: getKey">
     <div class="list-label">{{ key.readable }}</div>
     <div class="list-element" *ngIf="key.type === 'boolean'">
-      <mat-slide-toggle color="primary" (change)="changeBoolean(key, $event)"></mat-slide-toggle>
+      <mat-slide-toggle
+        color="primary"
+        [checked]="key.val"
+        (change)="changeBoolean(key, $event)"
+      ></mat-slide-toggle>
     </div>
     <div class="list-element" *ngIf="key.type === 'radio'">
-      <mat-radio-group [value]="key.val" (change)="changeRadio(key, $event)">
-        <mat-radio-button color="accent" value="*"> All </mat-radio-button>
-        <mat-radio-button color="primary" *ngFor="let option of key.options" [value]="option"> {{option}} </mat-radio-button>
-      </mat-radio-group>
+      <mat-slide-toggle
+        [checked]="all"
+        (change)="toggleAll($event)"
+        >All</mat-slide-toggle
+      >
+      <mat-slide-toggle
+        *ngFor="let btn of key.options"
+        [checked]="btn.selected"
+        [ngClass]="{ gray: !btn.selected }"
+        [btnColor]="btn.color"
+        (change)="changeRadio(key, btn.option, $event)"
+        color="accent"
+        >{{ btn.option }}</mat-slide-toggle
+      >
     </div>
   </div>
 </div>

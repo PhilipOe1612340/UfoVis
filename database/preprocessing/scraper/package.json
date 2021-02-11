@@ -4,9 +4,10 @@
   "description": "",
   "main": "scrape.js",
   "scripts": {
-    "install": "npm run download && npm run convert",
+    "install": "npm run download && npm run convert && npm run upload",
     "download": "node scrape.js",
-    "convert": "node getCityCoordinates.js && node csvToSQL.js"
+    "convert": "node getCityCoordinates.js && node csvToSQL.js",
+    "upload": "node upload.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "csv-parser": "^2.3.3",
     "csv-writer": "^1.6.0",
     "node-fetch": "^2.6.1",
-    "node-html-parser": "^2.0.0"
+    "node-html-parser": "^2.0.0",
+    "pg": "8.5.1"
   }
 }

@@ -7,7 +7,7 @@
     "init": "pip install virtualenv && python -m venv virtual-env",
     "initUnix": "npm run init && source ./virtual-env/bin/activate && npm install",
     "initWindows": "npm run init && virtual-env\\Scripts\\activate.bat && npm install",
-    "start": "cross-env FLASK_APP='src/server.py' DATABASE_HOST=localhost FLASK_DEBUG=1 python -m flask run --port=3000",
+    "start": "cross-env FLASK_APP='src/server.py' DATABASE_HOST=localhost FLASK_DEBUG=1 python -m flask run",
     "install": "pip install -r requirements.txt"
   },
   "dependencies": {

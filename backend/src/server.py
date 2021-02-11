@@ -4,6 +4,7 @@ from psycopg2 import sql
 import psycopg2
 import json
 from orm.report import Report
+from orm.airport import Airport
 from sqlalchemy import func
 from db import DatabaseConnection
 from orm.queries import handleFilters
@@ -38,3 +39,11 @@ def send_index():
 def send_static(path):
     return send_from_directory('../static/', path)
     
+@app.route('/airports')
+def airports():
+    query = Airport.query(db_connection.get_read_session())
+    limit = request.args.get("limit", 10**10)
+    query = query.filter(Airport.type_size != 'closed').order_by(func.random())
+    query = query.limit(limit)
+    airports = tuple(Airport.row_to_dict(airport) for airport in query)
+    return jsonify(airports), 200

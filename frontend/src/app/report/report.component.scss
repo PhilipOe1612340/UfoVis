@@ -1,0 +1,23 @@
+div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 30vw;
+  max-width: 450px;
+  margin: 5px 10px 0 0;
+  padding: 10px;
+  border-radius: 5px;
+  min-width: 220px;
+  background-color: rgba(0, 0, 0, 0.37);
+  color: white;
+}
+
+span:first-child {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+span:not(:first-child) {
+  color: rgb(153, 153, 153);
+}
