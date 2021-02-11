@@ -8,6 +8,7 @@ div {
   border: 1px solid gray;
   padding: 10px;
   border-radius: 5px;
+  min-width: 220px;
 }
 
 span:first-child {
@@ -17,5 +18,5 @@ span:first-child {
 }
 
 span:not(:first-child) {
-  color: gray;
+  color: rgb(48, 48, 48);
 }

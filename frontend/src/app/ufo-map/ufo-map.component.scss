@@ -13,8 +13,12 @@ $overmap: 9999;
   height: max-content;
   max-height: 60vh;
   overflow: auto;
-  background: white;
+  background: #ffffff3b;
   z-index: $overmap;
+  @media screen and (max-width: 600px) {
+    bottom: 77px;
+    right: 25px;
+  }
 }
 
 .scroll {

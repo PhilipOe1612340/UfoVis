@@ -52,7 +52,7 @@ export class DataService {
   }
 
 
-  async getData(options: { params?: { [key: string]: string }, forceFetch?: boolean } = {}): Promise<GeoObj[]> {
+  async getData(options: { params?: { [key: string]: string | number | undefined }, forceFetch?: boolean } = {}): Promise<GeoObj[]> {
     if (this.data.length > 0 && !options.forceFetch) {
       return this.data;
     }
@@ -68,8 +68,15 @@ export class DataService {
     return this.data = data;
   }
 
-  async getAirports(): Promise<GeoObjAirport[]> {
-    this.airport_data = await this.http.get<GeoObjAirport[]>(environment.server + 'airports', {}).toPromise();
+  async getAirports(options: { params?: { [key: string]: string | number | undefined }} = {}): Promise<GeoObjAirport[]> {
+    let params = new HttpParams();
+    if (options.params) {
+      params = Object.keys(options.params)
+        .filter(key => options.params![key])
+        .reduce((p, key) => p.append(key, options.params![key] as any), params);
+    }
+
+    this.airport_data = await this.http.get<GeoObjAirport[]>(environment.server + 'airports', { params }).toPromise();
     return this.airport_data;
   }
 }

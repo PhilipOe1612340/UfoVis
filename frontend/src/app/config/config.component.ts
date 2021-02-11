@@ -3,7 +3,7 @@ import { MatRadioChange } from '@angular/material/radio';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DataService } from '../data.service';
 import { ConfigService, ConfigSetting } from './config.service';
-
+import { isEqual } from 'underscore';
 interface Setting<T = any> {
   key: ConfigSetting;
   type: string;
@@ -20,6 +20,7 @@ interface Setting<T = any> {
 export class ConfigComponent implements OnInit {
   public isExpanded = false;
   public keys: Setting[] = [];
+  public all = true;
 
   constructor(private config: ConfigService, private service: DataService) {
   }
@@ -34,12 +35,11 @@ export class ConfigComponent implements OnInit {
       key: "displayShape",
       type: "radio",
       val: "*",
-      options: shapes.map(option => ({ option, color: this.service.colorScale(option).slice(4, -1), selected: false })),
+      options: shapes.map(option => ({ option, color: this.service.colorScale(option).slice(4, -1), selected: true })),
       readable: "Display only specified shape:"
     };
     this.keys.push(...config, shapeConfig);
     this.config.registerListener('configIsShown', (shown: boolean) => this.isExpanded = shown);
-    this.config.registerListener('displayShape', (v) => this.keys[1].options?.forEach(o => o.selected = o.option === v));
   }
 
   public toggleExpand() {
@@ -53,9 +53,27 @@ export class ConfigComponent implements OnInit {
     this.config.setSetting(setting.key, event.checked);
   }
 
-  public changeRadio(setting: Setting<string>, event: MatRadioChange) {
-    setting.val = event.value;
-    this.config.setSetting(setting.key, event.value);
+  public changeRadio(setting: Setting<string>, button: string, event: MatSlideToggleChange) {
+    const btn = this.keys[2].options?.find(b => b.option === button);
+    if (btn) {
+      btn.selected = event.checked;
+    }
+
+    const allShapesSelected: boolean = this.keys[2].options?.every(o => o.selected) as boolean;
+    let keys;
+    if (allShapesSelected) {
+      keys = ['*'];
+    } else {
+      keys = this.keys[2].options?.filter(o => o.selected).map(o => o.option);
+    }
+    this.all = allShapesSelected;
+
+    this.config.setSetting(setting.key, keys);
+  }
+
+  public toggleAll(event: MatSlideToggleChange) {
+    this.config.setSetting('displayShape', event.checked ? ['*'] : []);
+    this.keys[2].options?.forEach(o => o.selected = event.checked);
   }
 
   public getKey(_i: number, setting: Setting) {

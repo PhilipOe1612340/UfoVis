@@ -17,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
 import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster';
 import { ReportComponent } from './report/report.component';
+import { BtnColorDirective } from './ufo-map/btn-color.directive';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ReportComponent } from './report/report.component';
     UfoMapComponent,
     ConfigComponent,
     TimeSliderComponent,
-    ReportComponent
+    ReportComponent,
+    BtnColorDirective
   ],
   imports: [
     BrowserModule,

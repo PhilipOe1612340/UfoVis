@@ -8,7 +8,7 @@ export type ConfigSetting = "configIsShown" | "startYear" | "stopYear" | "displa
   providedIn: 'root'
 })
 export class ConfigService {
-  private readonly config: { [key in ConfigSetting]: any } = { configIsShown: false, startYear: 2006, stopYear: 2021, displayShape: "*", showAirportData: true, sortPieCharts: false };
+  private readonly config: { [key in ConfigSetting]: any } = { configIsShown: false, startYear: 2006, stopYear: 2021, displayShape: ['*'], showAirportData: true, sortPieCharts: false };
   private subscribers: { type: string, fn: (newVal: any) => void }[] = [];
 
   constructor() { }
@@ -21,8 +21,8 @@ export class ConfigService {
     return true;
   }
 
-  getSetting(key: ConfigSetting) {
-    return this.config[key];
+  getSetting<T>(key: ConfigSetting) {
+    return this.config[key] as T;
   }
 
   registerListener(key: ConfigSetting, fn: (newVal: any) => void, runOnRegister = true) {
