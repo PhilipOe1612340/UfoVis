@@ -14,6 +14,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+
 
 import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster';
 import { ReportComponent } from './report/report.component';
@@ -36,6 +39,8 @@ import { BtnColorDirective } from './btn-color.directive';
     MatSlideToggleModule,
     MatRadioModule,
     MatExpansionModule,
+    MatButtonModule,
+    MatIconModule,
     NgxSliderModule,
     LeafletMarkerClusterModule,
   ],

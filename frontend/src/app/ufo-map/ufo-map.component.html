@@ -1,5 +1,8 @@
 <div id="legend">
-  <div id="airports" *ngIf="airportlegend.length >= 0">
+  <button mat-mini-fab color="black" *ngIf="airportlegend.length > 0 || legend.length > 0" (click)="closeLegend()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <div id="airports" *ngIf="airportlegend.length > 0">
     <div *ngFor="let airport of airportlegend">
       <img
         [src]="getAirportIconByType(airport.type)"
@@ -9,29 +12,31 @@
       <span>{{ airport.count }}</span>
     </div>
   </div>
-  <mat-accordion *ngIf="legend.length >= 0">
-    <mat-expansion-panel
-      [btnColor]="service.colorScale(shape.key)"
-      *ngFor="let shape of legend; trackBy: trackShape"
-      (opened)="reload()"
-      hideToggle
-    >
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <span> {{ shape.key }} </span>
-          <span> {{ shape.reports.length }} </span>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <div class="scroll">
-          <ufo-report
-            *ngFor="let report of shape.reports"
-            [data]="report"
-          ></ufo-report>
-        </div>
-      </ng-template>
-    </mat-expansion-panel>
-  </mat-accordion>
+  <div id="accordion">
+    <mat-accordion *ngIf="legend.length > 0">
+      <mat-expansion-panel
+        [btnColor]="service.colorScale(shape.key)"
+        *ngFor="let shape of legend; trackBy: trackShape"
+        (opened)="reload()"
+        togglePosition="before"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span> {{ shape.key }} </span>
+            <span> {{ shape.reports.length }} </span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="scroll">
+            <ufo-report
+              *ngFor="let report of shape.reports"
+              [data]="report"
+            ></ufo-report>
+          </div>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 </div>
 <div
   leaflet

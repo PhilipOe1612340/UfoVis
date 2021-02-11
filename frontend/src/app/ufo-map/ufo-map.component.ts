@@ -239,7 +239,8 @@ export class UfoMapComponent implements OnInit {
   /**
    * Somehow Angular struggles to detect changes to the legend
    */
-  public reload() {
+  public async reload() {
+    await Promise.resolve();
     this.cdr.detectChanges();
   }
 
@@ -324,5 +325,11 @@ export class UfoMapComponent implements OnInit {
 
   public trackShape(_index: number, item: { key: string, reports: Report[] }) {
     return item.reports[0].id;
+  }
+
+  public closeLegend() {
+    this.legend = [];
+    this.airportlegend = [];
+    this.reload();
   }
 }

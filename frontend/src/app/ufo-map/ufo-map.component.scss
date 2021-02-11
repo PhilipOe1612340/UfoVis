@@ -11,20 +11,29 @@ $overmap: 9999;
   right: 7px;
   width: max-content;
   height: max-content;
-  max-height: 60vh;
-  overflow: auto;
   background: #ffffff3b;
   z-index: $overmap;
   @media screen and (max-width: 600px) {
     bottom: 77px;
     right: 25px;
   }
+
+  button {
+    position: absolute;
+    right: 0px;
+    top: -45px;
+  }
+}
+
+#accordion {
+  overflow: auto;
+  max-height: 60vh;
 }
 
 #airports {
   display: flex;
   flex-direction: row;
-  width: 92%;
+  width: 96%;
   background-color: black;
   margin-bottom: 10px;
   padding: 5px;
@@ -42,7 +51,7 @@ $overmap: 9999;
   }
 }
 
-mat-panel-title{
+mat-panel-title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
