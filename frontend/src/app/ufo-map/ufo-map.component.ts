@@ -48,6 +48,7 @@ export class UfoMapComponent implements OnInit {
   public layersControl: any;
   private airport_data: GeoObjAirport[] = [];
   public legend: { key: string, reports: Report[] }[] = [];
+  public airportlegend: { type: AirportType, count: number }[] = [];
 
   public markerClusterOptions: L.MarkerClusterGroupOptions = {
     iconCreateFunction: (c) => this.defineClusterIcon(c),
@@ -226,6 +227,12 @@ export class UfoMapComponent implements OnInit {
     this.legend = shapes.map(([key, rep]) => {
       return { key, reports: rep.map((rep: any) => rep.properties) }
     });
+
+    const airports = Array.from(this.filterAirports(features).entries());
+    this.airportlegend = airports.map(([type, rep]) => {
+      return { type, count: rep.length }
+    });
+
     this.cdr.detectChanges();
   }
 
@@ -275,75 +282,34 @@ export class UfoMapComponent implements OnInit {
     }
   }
 
-  private add_airport_symbols() {
-    const helipad_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 41],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_heliport.png'
-      })
-    };
-    const small_airport_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 33],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_small_airport.png'
-      })
-    };
-    const medium_airport_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 33],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_medium_airport.png'
-      })
-    };
-    const large_airport_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 33],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_large_airport.png'
-      })
-    };
-    const balloon_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 33],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_balloonport.png'
-      })
-    };
-    const seaplane_icon_options = {
-      icon: L.icon({
-        iconSize: [25, 33],
-        iconAnchor: [0, 0],
-        iconUrl: 'assets/Icon/icon_seaplane_base.png'
-      })
-    };
+  public getAirportIconByType(airport: AirportType) {
+    switch (airport) {
+      case AirportType.SmallAirport:
+        return 'assets/Icon/icon_small_airport.png';
+      case AirportType.MediumAirport:
+        return 'assets/Icon/icon_medium_airport.png';
+      case AirportType.Baloonport:
+        return 'assets/Icon/icon_balloonport.png';
+      case AirportType.SeaplaneBase:
+        return 'assets/Icon/icon_seaplane_base.png';
+      case AirportType.Heliport:
+        return 'assets/Icon/icon_heliport.png';
+      default:
+        return 'assets/Icon/icon_large_airport.png';
+    }
+  }
 
+  private add_airport_symbols() {
     const airport_layer = L.geoJSON(
       this.airport_data as any, {
       pointToLayer: (geo: GeoObjAirport, latlng) => {
-        let icon;
-        switch (geo.properties.type_size) {
-          case AirportType.SmallAirport:
-            icon = small_airport_icon_options;
-            break;
-          case AirportType.MediumAirport:
-            icon = medium_airport_icon_options;
-            break;
-          case AirportType.Heliport:
-            icon = helipad_icon_options;
-            break;
-          case AirportType.Baloonport:
-            icon = balloon_icon_options;
-            break;
-          case AirportType.SeaplaneBase:
-            icon = seaplane_icon_options;
-            break;
-          default:
-            icon = large_airport_icon_options;
-            break;
-        }
-        return L.marker(latlng, icon).bindPopup(`${geo.properties.name} - ${geo.properties.country_code}`)
+        const type = geo.properties.type_size
+        const icon = L.icon({
+          iconSize: type === AirportType.Heliport ? [25, 41] : [25, 33],
+          iconAnchor: [0, 0],
+          iconUrl: this.getAirportIconByType(type)
+        });
+        return L.marker(latlng, { icon }).bindPopup(`${geo.properties.name} - ${geo.properties.country_code}`)
       }
     });
     return airport_layer;

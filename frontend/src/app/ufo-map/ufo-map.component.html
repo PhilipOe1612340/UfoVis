@@ -1,4 +1,10 @@
 <div id="legend">
+  <div id="airports" *ngIf="airportlegend.length >= 0">
+    <div *ngFor="let airport of airportlegend">
+      <img [src]="getAirportIconByType(airport.type)" [alt]="airport.type" />
+      <span>{{ airport.count }}</span>
+    </div>
+  </div>
   <mat-accordion *ngIf="legend.length >= 0">
     <mat-expansion-panel
       [btnColor]="service.colorScale(shape.key)"
