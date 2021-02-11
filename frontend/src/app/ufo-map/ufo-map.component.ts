@@ -233,6 +233,13 @@ export class UfoMapComponent implements OnInit {
       return { type, count: rep.length }
     });
 
+    this.reload();
+  }
+
+  /**
+   * Somehow Angular struggles to detect changes to the legend
+   */
+  public reload() {
     this.cdr.detectChanges();
   }
 

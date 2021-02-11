@@ -1,7 +1,11 @@
 <div id="legend">
   <div id="airports" *ngIf="airportlegend.length >= 0">
     <div *ngFor="let airport of airportlegend">
-      <img [src]="getAirportIconByType(airport.type)" [alt]="airport.type" />
+      <img
+        [src]="getAirportIconByType(airport.type)"
+        [alt]="airport.type"
+        [title]="airport.type + ''"
+      />
       <span>{{ airport.count }}</span>
     </div>
   </div>
@@ -9,6 +13,8 @@
     <mat-expansion-panel
       [btnColor]="service.colorScale(shape.key)"
       *ngFor="let shape of legend; trackBy: trackShape"
+      (opened)="reload()"
+      hideToggle
     >
       <mat-expansion-panel-header>
         <mat-panel-title>
