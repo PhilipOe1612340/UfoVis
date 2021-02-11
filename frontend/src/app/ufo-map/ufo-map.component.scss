@@ -41,8 +41,12 @@ $overmap: 9999;
   }
 }
 
-mat-panel-title,
-mat-panel-description {
+mat-panel-title{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  width: 90%;
   text-shadow: 0px 0px 5px #000000c2;
 }
 

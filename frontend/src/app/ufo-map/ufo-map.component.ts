@@ -52,7 +52,7 @@ export class UfoMapComponent implements OnInit {
 
   public markerClusterOptions: L.MarkerClusterGroupOptions = {
     iconCreateFunction: (c) => this.defineClusterIcon(c),
-    // disableClusteringAtZoom: 9
+    zoomToBoundsOnClick: false
   }
   public markerClusterGroup!: L.MarkerClusterGroup;
   public markerClusterData: L.Marker[] = [];
@@ -226,7 +226,7 @@ export class UfoMapComponent implements OnInit {
     const shapes = Array.from(this.filterShapes(features).entries());
     this.legend = shapes.map(([key, rep]) => {
       return { key, reports: rep.map((rep: any) => rep.properties) }
-    });
+    }).sort((r1, r2) => r2.reports.length - r1.reports.length);
 
     const airports = Array.from(this.filterAirports(features).entries());
     this.airportlegend = airports.map(([type, rep]) => {

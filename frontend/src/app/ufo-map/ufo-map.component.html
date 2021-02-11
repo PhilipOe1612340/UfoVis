@@ -11,10 +11,10 @@
       *ngFor="let shape of legend; trackBy: trackShape"
     >
       <mat-expansion-panel-header>
-        <mat-panel-title> {{ shape.key }}</mat-panel-title>
-        <mat-panel-description>
-          {{ shape.reports.length }}
-        </mat-panel-description>
+        <mat-panel-title>
+          <span> {{ shape.key }} </span>
+          <span> {{ shape.reports.length }} </span>
+        </mat-panel-title>
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <div class="scroll">
