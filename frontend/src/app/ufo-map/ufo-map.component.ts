@@ -256,7 +256,7 @@ export class UfoMapComponent implements OnInit {
     const layer = L.geoJSON(
       this.data as any, {
       pointToLayer: (geo: GeoObj, latlng) => {
-        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.description} – ${geo.properties.date}`)
+        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.shape}: ${geo.properties.description} – ${geo.properties.date}`)
       }
     });
 
