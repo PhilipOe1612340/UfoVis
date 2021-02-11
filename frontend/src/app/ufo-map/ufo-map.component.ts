@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import * as L from "leaflet";
 import { DataService, Report, Airport } from '../data.service';
 import "leaflet.markercluster";
@@ -80,7 +80,6 @@ export interface Coordinate {
   styleUrls: ['./ufo-map.component.scss']
 })
 export class UfoMapComponent implements OnInit {
-
   public options = {
     layers: [
       L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -94,9 +93,9 @@ export class UfoMapComponent implements OnInit {
   };
 
   public layers: L.Marker[] = [];
-
   public layersControl: any;
   private airport_data: GeoObjAirport[] = [];
+  public legend: {key: string, reports: Report[]}[] = [];
 
   public markerClusterOptions: L.MarkerClusterGroupOptions = {
     iconCreateFunction: (c) => this.defineClusterIcon(c),
@@ -112,7 +111,7 @@ export class UfoMapComponent implements OnInit {
   private sizeRange!: ScaleLinear<number, number, never>;
   maxClusterRadius = 30;
 
-  constructor(private service: DataService, public config: ConfigService) {
+  constructor(public service: DataService, public config: ConfigService, private cdr: ChangeDetectorRef) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -226,7 +225,7 @@ export class UfoMapComponent implements OnInit {
 
   markerClusterReady(group: L.MarkerClusterGroup) {
     this.markerClusterGroup = group;
-    group.on('clustermouseover', (e) => this.showCluster(e));
+    group.on('clusterclick', (e) => this.showCluster(e));
   }
 
   private filterShapes(data: GeoObj[]) {
@@ -268,9 +267,13 @@ export class UfoMapComponent implements OnInit {
 
   public showCluster(event: L.LeafletEvent) {
     const children = event.propagatedFrom.getAllChildMarkers();
-    const features = children.map((c: any)=> ({properties: c.feature.geometry.properties}));
-    const shapes = this.filterShapes(features);
-    console.log(shapes)
+    const features = children.map((c: any) => ({ properties: c.feature.geometry.properties }));
+    const shapes = Array.from(this.filterShapes(features).entries());
+    this.legend = shapes.map(([key, rep]) => {
+      return { key, reports: rep.map((rep: any) => rep.properties) }
+    });
+    console.log(this.legend)
+    this.cdr.detectChanges();
   }
 
   private registerPieOverlay() {
@@ -391,5 +394,9 @@ export class UfoMapComponent implements OnInit {
       }
     });
     return airport_layer;
+  }
+
+  public trackShape(_index: number, item: {key: string, reports: Report[]}) {
+    return item.reports[0].id;
   }
 }

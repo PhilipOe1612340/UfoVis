@@ -1,0 +1,19 @@
+div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 30vw;
+  margin: 5px 10px 0 0;
+  border: 1px solid gray;
+  padding: 10px;
+}
+
+span:first-child {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+span:not(:first-child) {
+  color: gray;
+}

@@ -13,15 +13,18 @@ import { TimeSliderComponent } from './time-slider/time-slider.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster';
+import { ReportComponent } from './report/report.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UfoMapComponent,
     ConfigComponent,
-    TimeSliderComponent
+    TimeSliderComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluste
     BrowserAnimationsModule,
     MatSlideToggleModule,
     MatRadioModule,
+    MatExpansionModule,
     NgxSliderModule,
     LeafletMarkerClusterModule,
   ],

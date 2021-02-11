@@ -11,6 +11,7 @@ export interface Report {
   description: string,
   date: Date,
   shape: string,
+  id: number
 }
 
 export interface Airport {
