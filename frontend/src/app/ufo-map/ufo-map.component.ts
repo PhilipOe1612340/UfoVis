@@ -5,7 +5,7 @@ import "leaflet.markercluster";
 import { ConfigService } from '../config/config.service';
 import * as d3 from "d3";
 import { Geometry, Feature, Point } from 'geojson';
-import { ScaleLinear } from 'd3';
+import { ScalePower } from 'd3';
 import { isEqual } from 'underscore';
 
 export type GeoObj = Feature<Point | Geometry, Report>
@@ -61,7 +61,7 @@ export class UfoMapComponent implements OnInit {
   public gradientImg: string = "";
 
   private data: GeoObj[] = [];
-  private sizeRange!: ScaleLinear<number, number, never>;
+  private sizeRange!: ScalePower<number, number, never>;
   maxClusterRadius = 30;
 
   constructor(public service: DataService, public config: ConfigService, private cdr: ChangeDetectorRef) {
@@ -69,12 +69,9 @@ export class UfoMapComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.airport_data = await this.service.getAirports({ params: { limit: 10000 } });
-    this.data = await this.service.getData();
+    this.data = await this.service.getData({ params: { limit: 10000 } });
 
-    const map = this.filterShapes(this.data)
-    const shapes = Array.from(map.keys());
-    const max = Math.max(...shapes.map(val => val.length));
-    this.sizeRange = d3.scaleLinear().domain([0, max]).range([22, 30]).clamp(true);
+    this.sizeRange = d3.scaleSqrt().domain([0, this.data.length]).range([16, 60]).clamp(true);
 
     this.registerPieOverlay();
 
