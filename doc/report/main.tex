@@ -6,6 +6,10 @@
 \usepackage{hyperref} %\url
 \usepackage{numprint} %print numbers with thousand separator
 
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\graphicspath{ {./images/} }
+
 \title{UfoVis}
 \author{Marius, Philip, Robin}
 \date{February 2021}
@@ -66,7 +70,116 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
 \item Adding airports to the map makes it possible to see whether a report may co-occurs with a aircraft. There are two problems that can be solved based on the airports. The first one is, whether a certain airport type co-occurs with a certain UFO shape, which can be seen in the glyph. The second one is that when there is an airport near to an UFO report, the UFO may is an aircraft.
 \end{compactenum}
 
+\section*{System}
+
+\begin{wrapfigure}{r}{0.6\textwidth} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{highLevelUSA}
+    \caption{Birds eye view USA}
+    \label{fig:highLevelUSA}
+\end{wrapfigure}
+
+After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the brirds eye view on the USA. It has there glyphs. Let's focus only on in the middle. The bluish area in the back with the blue border show the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
+\\
+From the outer circle of the glyph it you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sighings.
+\\
+The inner circle does the same with the different types of airports.
+\\
+
+\begin{wrapfigure}{r}{0.6\textwidth} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{legendEastCostUsa2}
+    \caption{Legend of the East Coast USA glyph}
+    \label{fig:legendEastCostUsa2}
+\end{wrapfigure}
+
+After clciking on the wished glyph a legend shows up. 
+Now you can see more details about the glyph as shown in \ref{fig:legendEastCostUsa2}. 
+The light green part of the outer circle represents 280 reporters claim that the shape 
+of what they have seen was a light, 144 said it was a circle and 194 
+didn't meantion a shape in their report. \\
+
+Additionally you get more information about the airports which are within this area. In the 
+black box on the top there are different airport markers. These represent the different kind of airports
+that in this area. The number below the marker says how many there are of the specific type
+in this area. For instance, the blue marker represents \textit{small airport}, the orange
+one represents \textit{heliport} and so on. While hovering over the airport icon a tool tip
+shows up that gives the textual representation of the airport type. Concrete this means there are 
+1648 small airports, 686 heliports and various other different airports. 
+\\
+When clicking on a line inside the legend, meaning on a specific shape, a drop down opens and you
+can see the different reports. Taking the first in figure \ref{fig:legendEastCostUsa2} inside circle
+you have the report describtion 
+\textit{My dad, and I saw about 6 lights of varying distances apart from each other extremely high in the sky…}
+as well as the duration in the low left corner, \textit{300s} which means 300 seconds 
+or 5 minutes, and the date it happend \textit{2/7/2020} in the right low corner. The date is in 
+american format. Therefore it happend the February the 7th in 2020.
+\\
+\newpage
+\begin{wrapfigure}{r}{0.6\textwidth} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{SettingsTap}
+    \caption{Legend of the East Coast USA glyph}
+    \label{fig:SettingsTap}
+\end{wrapfigure}
+
+On the right left upper corner of the map there is a button with which you can open the settings.
+Click on it the settings like shown in figure \ref{fig:SettingsTap} will slide in. Here you can fine tune
+what you see on the map. \\
+\textit{Display airport data}, with this slider you can show or hide the airport. From the high level view,
+with the glyphs that doesn't alway make sence but when you have zoomed in it can happen that there
+are more airports than sightings and maybe you want to see only the UFO sightings.
+\\
+The \textit{Keep pie chart order constant} is to fix the order of shapes of the glyph. The pie chart gives
+shows the shape that occures the most first. If you want to compare two glyphs it can be useful to have the
+shapes in a fixed order inside the glyphs.
+\\
+Finally there is the possiblity to include or exclude some shape. With this one you can
+select the year range in which you want to explore sightings. 
+\\
+
+
+\begin{wrapfigure}{r}{0.6\textwidth} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{yearSilder}
+    \caption{Legend of the East Coast USA glyph}
+    \label{fig:yearSilder}
+\end{wrapfigure}
+
+The last useful component is the year slider as shown in figure \ref{fig:yearSilder}. 
+\\\\\\\\\\\\\\
+
+\section*{Use Case}
+
+Our world gets more an more filled with recommender systems, their only goal is to keep us looking at the screen. They show us things we might be interested in and they are very good at doing this. If one tends to believe in conspiracy theories the system will guide him towards new theories all the time.  \\
+Our app could be one target such a person runs into. The diffenerce to any article they read is that form our app, this people will get a unfiltered non biased but accessible of browsing through these reports. They look at the single reports themselfs and decide if they think this is a trusty source or not. \\
+
+\newpage
+
+\begin{wrapfigure}{r}{0.7\textwidth} 
+    \centering
+    \includegraphics[width=0.4\textwidth]{Tennesee}
+    \caption{Legend of the East Coast USA glyph}
+    \label{fig:Tennesee}
+\end{wrapfigure}
+
+It could also be seen as a tool for scientific research or myth busting. Taking the 90s television series "X-Files", where two FBI agent investigate in unsolve cases that are weird due to their describtion. Actually it is not their goal to support some kind of mystic or supernatural theory.
+They want to find proper and scientific bullet proof explanations for happenings. So do we! Always keep in mind it's easy to say that people haven't seen what they claim they did, but it's also possible that their interpretaion is simply wrong.
+
+So let's say someone tells you he has see something weird in October 2014 near Nashville. You can double check with our app
+if there is someone else that has seen the same phenomena. If yes might be worth spending some more time to Actually find out
+what has happend that in this area.\\
+
+\begin{wrapfigure}{r}{0.7\textwidth} 
+    \centering
+    \includegraphics[width=0.4\textwidth]{funnyFindings}
+    \caption{Legend of the East Coast USA glyph}
+    \label{fig:funnyFindings}
+\end{wrapfigure}
+
+If you nither want to bust some myths nor you are open to conspiracy theories, 
+you might use our app as we do. Click through the reports, look for the really 
+stupid ones and read them loud to your friends. Like ones you can see in figure \ref{fig:funnyFindings}.
+ Why? Because they are funny! Actually this is what this project is really about, "fun".
 
 \end{document}
-
-
