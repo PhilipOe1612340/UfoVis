@@ -5,7 +5,7 @@ import "leaflet.markercluster";
 import { ConfigService } from '../config/config.service';
 import * as d3 from "d3";
 import { Geometry, Feature, Point } from 'geojson';
-import { ScaleLinear } from 'd3';
+import { ScalePower } from 'd3';
 import { isEqual } from 'underscore';
 
 export type GeoObj = Feature<Point | Geometry, Report>
@@ -15,7 +15,7 @@ export enum AirportType {
   SmallAirport = 'small_airport',
   MediumAirport = 'medium_airport',
   Heliport = 'heliport',
-  Baloonport = 'baloonport',
+  Balloonport = 'balloonport',
   SeaplaneBase = 'seaplane_base',
 }
 
@@ -61,20 +61,17 @@ export class UfoMapComponent implements OnInit {
   public gradientImg: string = "";
 
   private data: GeoObj[] = [];
-  private sizeRange!: ScaleLinear<number, number, never>;
+  private sizeRange!: ScalePower<number, number, never>;
   maxClusterRadius = 30;
 
   constructor(public service: DataService, public config: ConfigService, private cdr: ChangeDetectorRef) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.airport_data = await this.service.getAirports({ params: { limit: 2000 } });
-    this.data = await this.service.getData();
+    this.airport_data = await this.service.getAirports({ params: { limit: 10000 } });
+    this.data = await this.service.getData({ params: { limit: 10000 } });
 
-    const map = this.filterShapes(this.data)
-    const shapes = Array.from(map.keys());
-    const max = Math.max(...shapes.map(val => val.length));
-    this.sizeRange = d3.scaleLinear().domain([0, max]).range([22, 30]).clamp(true);
+    this.sizeRange = d3.scaleSqrt().domain([0, this.data.length]).range([16, 60]).clamp(true);
 
     this.registerPieOverlay();
 
@@ -213,7 +210,7 @@ export class UfoMapComponent implements OnInit {
         fromYear: this.config.getSetting("startYear"),
         toYear: this.config.getSetting("stopYear"),
         shape: isEqual(shape, ['*']) ? undefined : shape.join(','),
-        limit: 2000,
+        limit: 10000,
       }, forceFetch: changed
     });
 
@@ -249,14 +246,14 @@ export class UfoMapComponent implements OnInit {
       icon: L.icon({
         iconSize: [25, 41],
         iconAnchor: [13, 41],
-        iconUrl: 'assets/marker-icon.png',
+        iconUrl: 'assets/Icon/ufo.png',
         shadowUrl: 'assets/marker-shadow.png'
       })
     };
     const layer = L.geoJSON(
       this.data as any, {
       pointToLayer: (geo: GeoObj, latlng) => {
-        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.description} – ${geo.properties.date}`)
+        return L.marker(latlng, markerOptions).bindPopup(`${geo.properties.duration} Seconds – ${geo.properties.shape}: ${geo.properties.description} – ${geo.properties.date}`)
       }
     });
 
@@ -281,7 +278,7 @@ export class UfoMapComponent implements OnInit {
         return '#4daf4a';
       case AirportType.Heliport:
         return '#ff7f00'
-      case AirportType.Baloonport:
+      case AirportType.Balloonport:
         return '#a65628';
       case AirportType.SeaplaneBase:
         return '#ffff33';
@@ -296,7 +293,7 @@ export class UfoMapComponent implements OnInit {
         return 'assets/Icon/icon_small_airport.png';
       case AirportType.MediumAirport:
         return 'assets/Icon/icon_medium_airport.png';
-      case AirportType.Baloonport:
+      case AirportType.Balloonport:
         return 'assets/Icon/icon_balloonport.png';
       case AirportType.SeaplaneBase:
         return 'assets/Icon/icon_seaplane_base.png';
