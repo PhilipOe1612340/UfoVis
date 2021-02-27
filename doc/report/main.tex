@@ -18,19 +18,19 @@
 
 \maketitle
 
-\begin{itemize}
-    \item Paper Outline Guidance (5-7 pages with graphics).
-    \item Introduction.  Briefly describe the problem you are solving and a high-level description of your approach.  Include your motivation for this problem.  Why is it important and why should I care? 
-    \item Data set.  Describe you data set in detail, how you collected the data and any preprocessing, data cleaning, transformations, etc.
-    \item Methodology
-    \begin{itemize}
-        \item How did you use the data?
-        \item What algorithms did you use and why?
-        \item How does your approach help you solve problems you identified in the introduction?
-    \end{itemize}
-    \item System.  Describe the essential components of your system/application.  Include a description of the users of your system and the tasks they can perform or the questions they can answer.
-    \item Use Cases.  Present one or two use cases that show case the most important features of your system.
-\end{itemize}
+% \begin{itemize}
+%     \item Paper Outline Guidance (5-7 pages with graphics).
+%     \item Introduction.  Briefly describe the problem you are solving and a high-level description of your approach.  Include your motivation for  this problem.  Why is it important and why should I care? 
+%     \item Data set.  Describe you data set in detail, how you collected the data and any preprocessing, data cleaning, transformations, etc.
+%     \item Methodology
+%     \begin{itemize}
+%         \item How did you use the data?
+%         \item What algorithms did you use and why?
+%         \item How does your approach help you solve problems you identified in the introduction?
+%     \end{itemize}
+%     \item System.  Describe the essential components of your system/application.  Include a description of the users of your system and the tasks  they can perform or the questions they can answer.
+%     \item Use Cases.  Present one or two use cases that show case the most important features of your system.
+% \end{itemize}
 
 
 \section*{Datasets}
@@ -43,7 +43,7 @@ Because of the type attribute, this dataset has a differentiation between differ
 \end{compactenum}
 Both datasets were downloaded as \textit{.csv} file and transformed to sql insert statements. There was no data preprocessing done for them, except for replacing undefined values with null, and replacing the apostrophes such that the database can handle the values. Both datasets will also not be fully loaded into the database. Only the following important attributes are loaded into the database. The id, the name of the airport in english, the country code, the type, the coordinates and the elevation in feet.\\
 
-The UFO reports were scraped from the website of the National UFO Reporting Center (NUFORC). Its an american organization, that collects and investigates alleged UFO sighings. On the NUFORC website (\url{http://www.nuforc.org/}), there is a link to a "report database" which is a collection of very basic HTML tables. You can choose different methods of indexing the database and then you get to a big list of links, all containing data. To automate this, we first collected all the urls to the data in HTML table form. Then we created node.js scripts to first download, then process and later upload the data to our own database. This process was very laborious because the HTML table was differently formatted in some cases and often unclosed tags. This confused some parsing libraries because they expect well formatted HTML. After this was fixed using some regex we had a big csv file with about 90 thousand reports. However, there was another problem. The reports only specify the location using the name of the city and without coordinates and it's also not known which country this reported city is in. To display markers on a map we needed to get the coordinates. To solve this we used a dataset of the biggest cities in the world and we were able to map the data to coordinates, sadly loosing about 20 percent of reports in the process, where no city could be found. The data was then transformed into sql insert statements and uploaded using a database connection. This process is fully automated and takes only a few seconds. 
+The UFO reports were scraped from the website of the National UFO Reporting Center (NUFORC). Its an american organization, that collects and investigates alleged UFO sightings. On the NUFORC website (\url{http://www.nuforc.org/}), there is a link to a ''report database'' which is a collection of very basic HTML tables. You can choose different methods of indexing the database and then you get to a big list of links, all containing data. To automate this, we first collected all the urls to the data in HTML table form. Then we created node.js scripts to first download, then process and later upload the data to our own database. This process was very laborious because the HTML table was differently formatted in some cases and often unclosed tags. This confused some parsing libraries because they expect well formatted HTML. After this was fixed using some regex we had a big csv file with about 90 thousand reports. However, there was another problem. The reports only specify the location using the name of the city and without coordinates and it's also not known which country this reported city is in. To display markers on a map we needed to get the coordinates. To solve this we used a dataset of the biggest cities in the world and we were able to map the data to coordinates, sadly loosing about 20 percent of reports in the process, where no city could be found. The data was then transformed into sql insert statements and uploaded using a database connection. This process is fully automated and takes only a few seconds. 
 
 
 
@@ -79,9 +79,9 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
     \label{fig:highLevelUSA}
 \end{wrapfigure}
 
-After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the brirds eye view on the USA. It has there glyphs. Let's focus only on in the middle. The bluish area in the back with the blue border show the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
+After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the birdseye view on the USA. It has there glyphs. Let's focus only on in the middle. The bluish area in the back with the blue border show the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
 \\
-From the outer circle of the glyph it you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sighings.
+From the outer circle of the glyph it you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sightings.
 \\
 The inner circle does the same with the different types of airports.
 \\
@@ -93,11 +93,11 @@ The inner circle does the same with the different types of airports.
     \label{fig:legendEastCostUsa2}
 \end{wrapfigure}
 
-After clciking on the wished glyph a legend shows up. 
+After clicking on the wished glyph a legend shows up. 
 Now you can see more details about the glyph as shown in \ref{fig:legendEastCostUsa2}. 
 The light green part of the outer circle represents 280 reporters claim that the shape 
 of what they have seen was a light, 144 said it was a circle and 194 
-didn't meantion a shape in their report. \\
+didn't mention a shape in their report. \\
 
 Additionally you get more information about the airports which are within this area. In the 
 black box on the top there are different airport markers. These represent the different kind of airports
@@ -109,11 +109,11 @@ shows up that gives the textual representation of the airport type. Concrete thi
 \\
 When clicking on a line inside the legend, meaning on a specific shape, a drop down opens and you
 can see the different reports. Taking the first in figure \ref{fig:legendEastCostUsa2} inside circle
-you have the report describtion 
+you have the report description 
 \textit{My dad, and I saw about 6 lights of varying distances apart from each other extremely high in the sky…}
 as well as the duration in the low left corner, \textit{300s} which means 300 seconds 
-or 5 minutes, and the date it happend \textit{2/7/2020} in the right low corner. The date is in 
-american format. Therefore it happend the February the 7th in 2020.
+or 5 minutes, and the date it happened \textit{2/7/2020} in the right low corner. The date is in 
+american format. Therefore it happened the February the 7th in 2020.
 \\
 \newpage
 \begin{wrapfigure}{r}{0.6\textwidth} 
@@ -127,14 +127,14 @@ On the right left upper corner of the map there is a button with which you can o
 Click on it the settings like shown in figure \ref{fig:SettingsTap} will slide in. Here you can fine tune
 what you see on the map. \\
 \textit{Display airport data}, with this slider you can show or hide the airport. From the high level view,
-with the glyphs that doesn't alway make sence but when you have zoomed in it can happen that there
+with the glyphs that doesn't alway make sense but when you have zoomed in it can happen that there
 are more airports than sightings and maybe you want to see only the UFO sightings.
 \\
 The \textit{Keep pie chart order constant} is to fix the order of shapes of the glyph. The pie chart gives
-shows the shape that occures the most first. If you want to compare two glyphs it can be useful to have the
+shows the shape that occurs the most first. If you want to compare two glyphs it can be useful to have the
 shapes in a fixed order inside the glyphs.
 \\
-Finally there is the possiblity to include or exclude some shape. With this one you can
+Finally there is the possibility to include or exclude some shape. With this one you can
 select the year range in which you want to explore sightings. 
 \\
 
@@ -152,7 +152,7 @@ The last useful component is the year slider as shown in figure \ref{fig:yearSil
 \section*{Use Case}
 
 Our world gets more an more filled with recommender systems, their only goal is to keep us looking at the screen. They show us things we might be interested in and they are very good at doing this. If one tends to believe in conspiracy theories the system will guide him towards new theories all the time.  \\
-Our app could be one target such a person runs into. The diffenerce to any article they read is that form our app, this people will get a unfiltered non biased but accessible of browsing through these reports. They look at the single reports themselfs and decide if they think this is a trusty source or not. \\
+Our app could be one target such a person runs into. The difference to any article they read is that form our app, this people will get a unfiltered non biased but accessible of browsing through these reports. They look at the single reports themselves and decide if they think this is a trusty source or not. \\
 
 \newpage
 
@@ -163,12 +163,12 @@ Our app could be one target such a person runs into. The diffenerce to any artic
     \label{fig:Tennesee}
 \end{wrapfigure}
 
-It could also be seen as a tool for scientific research or myth busting. Taking the 90s television series "X-Files", where two FBI agent investigate in unsolve cases that are weird due to their describtion. Actually it is not their goal to support some kind of mystic or supernatural theory.
-They want to find proper and scientific bullet proof explanations for happenings. So do we! Always keep in mind it's easy to say that people haven't seen what they claim they did, but it's also possible that their interpretaion is simply wrong.
+It could also be seen as a tool for scientific research or myth busting. Taking the 90s television series "X-Files", where two FBI agent investigate in unsolved cases that are weird due to their description. Actually it is not their goal to support some kind of mystic or supernatural theory.
+They want to find proper and scientific bullet proof explanations for happenings. So do we! Always keep in mind it's easy to say that people haven't seen what they claim they did, but it's also possible that their interpretation is simply wrong.
 
 So let's say someone tells you he has see something weird in October 2014 near Nashville. You can double check with our app
 if there is someone else that has seen the same phenomena. If yes might be worth spending some more time to Actually find out
-what has happend that in this area.\\
+what has happened that in this area.\\
 
 \begin{wrapfigure}{r}{0.7\textwidth} 
     \centering
@@ -177,7 +177,7 @@ what has happend that in this area.\\
     \label{fig:funnyFindings}
 \end{wrapfigure}
 
-If you nither want to bust some myths nor you are open to conspiracy theories, 
+If you neither want to bust some myths nor you are open to conspiracy theories, 
 you might use our app as we do. Click through the reports, look for the really 
 stupid ones and read them loud to your friends. Like ones you can see in figure \ref{fig:funnyFindings}.
  Why? Because they are funny! Actually this is what this project is really about, "fun".
