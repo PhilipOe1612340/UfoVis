@@ -7,7 +7,7 @@ import { AirportType, GeoObj, GeoObjAirport } from './ufo-map/ufo-map.component'
 export interface Report {
   latitude: number,
   longitude: number,
-  duration: number,
+  duration: string,
   description: string,
   date: Date,
   shape: string,
