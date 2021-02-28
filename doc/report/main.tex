@@ -33,7 +33,7 @@
 % \end{itemize}
 
 \section*{Introduction}
-UFOs are a cultural phenomenon. Theories first emerged in the USA of the 1950s and 60s but have gone on to fascinate of the whole world. The idea of aliens visiting earth or maybe even living among us seams to capture both peoples hopes and fears equally well. Thats why there are new reports of people seeing suspicious activity every day around the world. While we are not convinced yet that any of the reporters really are seeing UFS, we were interested in making about 90 thousand reports we found more accessible. The raw dataset does not easily allow interested users to look for patterns. Thats why we chose to put the data on a map, so that if there are any, local patterns of equal ufo shapes should stand out. However we don't think that the tool will uncover any real world information about UFOs but rather information about the people reporting everyday occurrences that they can not explain or cultural differences around the world.
+UFOs are a cultural phenomenon. Theories about extraterrestrial life visiting earth first emerged in the USA of the 1950s and 60s but have gone on to fascinate of the whole world. The idea of aliens visiting earth or maybe even living among us seams to capture both peoples hopes and fears equally well. Thats why there are new reports of people seeing suspicious activity every day around the world. While we are not convinced yet that any of the reporters really are seeing UFS, we were interested in making about 90 thousand reports we found more accessible. The raw dataset does not easily allow interested users to look for patterns. Thats why we chose to put the data on a map, so that if there are any, local patterns of equal ufo shapes should stand out. However we don't think that the tool will uncover any real world information about UFOs but rather information about the people reporting everyday occurrences that they can not explain or cultural differences around the world.
 
 
 \section*{Datasets}
@@ -73,8 +73,8 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
 \item Adding airports to the map makes it possible to see whether a report may co-occurs with a aircraft. There are two problems that can be solved based on the airports. The first one is, whether a certain airport type co-occurs with a certain UFO shape, which can be seen in the glyph. The second one is that when there is an airport near to an UFO report, the UFO may is an aircraft.
 \end{compactenum}
 \newpage
-\section*{System}
 
+\section*{System}
 \begin{wrapfigure}{r}{0.6\textwidth} 
     \centering
     \includegraphics[width=0.5\textwidth]{highLevelUSA}
@@ -82,9 +82,9 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
     \label{fig:highLevelUSA}
 \end{wrapfigure}
 
-After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the birdseye view on the USA. It has there glyphs. Let's focus on the one in the middle. The bluish area in the back with the blue border shows the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
+After starting the application for the first time you can see many glyph clusters on the map. In the figure \ref{fig:highLevelUSA}, you can see the birdseye view on the USA. It has three glyphs. Let's focus on the one in the middle. The bluish polygon in the background with the blue border shows the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
 \\
-From the outer circle of the glyph you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sightings.
+From the outer circle of the glyph you can see the relative appearance of the different UFO shapes. Meaning the shape that is represented by the light green color is about one fourth of all UFO sightings.
 \\
 The inner circle does the same with the different types of airports.
 \\
@@ -96,7 +96,7 @@ The inner circle does the same with the different types of airports.
     \label{fig:legendEastCostUsa2}
 \end{wrapfigure}
 
-After clicking on the wished glyph a legend shows up. 
+After clicking on a glyph a legend shows up. 
 Now you can see more details about the glyph as shown in \ref{fig:legendEastCostUsa2}. 
 The light green part of the outer circle represents 280 reporters who claim that the shape 
 of what they have seen was a light, 144 said it was a circle and 194 
@@ -107,15 +107,14 @@ black box on the top there are different airport markers. These represent the di
 that in this area. The number below the marker says how many there are of the specific type
 in this area. For instance, the blue marker represents \textit{small airport}, the orange
 one represents \textit{heliport} and so on. While hovering over the airport icon a tool tip
-shows up that gives the textual representation of the airport type. Concrete this means there are 
+shows up that gives the textual representation of the airport type. In this case there are 
 1648 small airports, 686 heliports and various other different airports. 
 \\
 When clicking on a line inside the legend, meaning on a specific shape, a drop down opens and you
 can see the different reports. Taking the first in figure \ref{fig:legendEastCostUsa2} inside \textit{Circle}
 you have the report description 
 \textit{My dad, and I saw about 6 lights of varying distances apart from each other extremely high in the sky…}
-as well as the duration in the low left corner, \textit{300s} which means 300 seconds 
-or 5 minutes, and the date it happened \textit{2/7/2020} in the right low corner. The date is in 
+as well as the duration in the low left corner and the date it happened \textit{2/7/2020} in the right low corner. The date is in 
 american format. Therefore it happened the February the 7th in 2020.
 \\
 \newpage
@@ -148,13 +147,13 @@ Finally there is the possibility to include or exclude some shape. By default al
     \label{fig:yearSilder}
 \end{wrapfigure}
 
-The last useful component is the year slider as shown in figure \ref{fig:yearSilder}. 
-\\\\\\\\\\\\\\
+The last useful component is the year slider as shown in figure \ref{fig:yearSilder}. Here you can set from when reports should be shown. This can show changes of influences coming from different media or cultural change in general. Also some very recognizable events like for example the deployment of SpaceX Startlink satellites can be filtered out for analysis. The satellites can understandably look alien since they are flying in close formation and they are very present in the the data of the last year.
 
 \section*{Use Case}
 
 Our world gets more an more filled with recommender systems, their only goal is to keep us looking at the screen. They show us things we might be interested in and they are very good at doing this. If one tends to believe in conspiracy theories the system will guide him towards new theories all the time.  \\
 Our app could be one target such a person runs into. The difference to any article they read is that from our app people will get a unfiltered non biased but accessible view on this UFO sightings. They look at the single reports themselves and decide if they think this is a trusty source or not. \\
+On the other hand, this unfiltered information could also make you doubt that UFOs exist if you see that there are so incredibly many reports and still there are somehow no confirmed cases. 
 
 \newpage
 
