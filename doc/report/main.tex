@@ -72,7 +72,7 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
 \item Based on the time slider, it can be discovered, whether the distribution of UFO shapes changes over time.
 \item Adding airports to the map makes it possible to see whether a report may co-occurs with a aircraft. There are two problems that can be solved based on the airports. The first one is, whether a certain airport type co-occurs with a certain UFO shape, which can be seen in the glyph. The second one is that when there is an airport near to an UFO report, the UFO may is an aircraft.
 \end{compactenum}
-
+\newpage
 \section*{System}
 
 \begin{wrapfigure}{r}{0.6\textwidth} 
@@ -82,9 +82,9 @@ The approach solves that by, firstly, displaying the different UFOs on the map, 
     \label{fig:highLevelUSA}
 \end{wrapfigure}
 
-After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the birdseye view on the USA. It has there glyphs. Let's focus only on in the middle. The bluish area in the back with the blue border show the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
+After starting the application for the first time you can see the glyphs. In the figure \ref{fig:highLevelUSA}, you can see the birdseye view on the USA. It has there glyphs. Let's focus on the one in the middle. The bluish area in the back with the blue border shows the area which the glyph belongs to. This area shows up when you hover the mouse pointer over the respective glyph.
 \\
-From the outer circle of the glyph it you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sightings.
+From the outer circle of the glyph you can see the relative appearance of the different UFO shapes. Meaning shape that is represented by the light green color is about one fourth of all UFO sightings.
 \\
 The inner circle does the same with the different types of airports.
 \\
@@ -98,7 +98,7 @@ The inner circle does the same with the different types of airports.
 
 After clicking on the wished glyph a legend shows up. 
 Now you can see more details about the glyph as shown in \ref{fig:legendEastCostUsa2}. 
-The light green part of the outer circle represents 280 reporters claim that the shape 
+The light green part of the outer circle represents 280 reporters who claim that the shape 
 of what they have seen was a light, 144 said it was a circle and 194 
 didn't mention a shape in their report. \\
 
@@ -111,7 +111,7 @@ shows up that gives the textual representation of the airport type. Concrete thi
 1648 small airports, 686 heliports and various other different airports. 
 \\
 When clicking on a line inside the legend, meaning on a specific shape, a drop down opens and you
-can see the different reports. Taking the first in figure \ref{fig:legendEastCostUsa2} inside circle
+can see the different reports. Taking the first in figure \ref{fig:legendEastCostUsa2} inside \textit{Circle}
 you have the report description 
 \textit{My dad, and I saw about 6 lights of varying distances apart from each other extremely high in the sky…}
 as well as the duration in the low left corner, \textit{300s} which means 300 seconds 
@@ -122,30 +122,29 @@ american format. Therefore it happened the February the 7th in 2020.
 \begin{wrapfigure}{r}{0.6\textwidth} 
     \centering
     \includegraphics[width=0.5\textwidth]{SettingsTap}
-    \caption{Legend of the East Coast USA glyph}
+    \caption{Settings Tab}
     \label{fig:SettingsTap}
 \end{wrapfigure}
 
 On the right left upper corner of the map there is a button with which you can open the settings.
 Click on it the settings like shown in figure \ref{fig:SettingsTap} will slide in. Here you can fine tune
 what you see on the map. \\
-\textit{Display airport data}, with this slider you can show or hide the airport. From the high level view,
+\textit{Display airport data}, with this slider you can show or hide the airports. From the high level view,
 with the glyphs that doesn't alway make sense but when you have zoomed in it can happen that there
 are more airports than sightings and maybe you want to see only the UFO sightings.
 \\
-The \textit{Keep pie chart order constant} is to fix the order of shapes of the glyph. The pie chart gives
-shows the shape that occurs the most first. If you want to compare two glyphs it can be useful to have the
+The \textit{Keep pie chart order constant} is to fix the order of shapes of the glyph. By default, the pie chart
+shows the shape that occurs the most at first. If you want to compare two glyphs it can be useful to have the
 shapes in a fixed order inside the glyphs.
 \\
-Finally there is the possibility to include or exclude some shape. With this one you can
-select the year range in which you want to explore sightings. 
+Finally there is the possibility to include or exclude some shape. By default all shapes will be displayed.
 \\
 
 
 \begin{wrapfigure}{r}{0.6\textwidth} 
     \centering
     \includegraphics[width=0.5\textwidth]{yearSilder}
-    \caption{Legend of the East Coast USA glyph}
+    \caption{Year Slider}
     \label{fig:yearSilder}
 \end{wrapfigure}
 
@@ -155,14 +154,14 @@ The last useful component is the year slider as shown in figure \ref{fig:yearSil
 \section*{Use Case}
 
 Our world gets more an more filled with recommender systems, their only goal is to keep us looking at the screen. They show us things we might be interested in and they are very good at doing this. If one tends to believe in conspiracy theories the system will guide him towards new theories all the time.  \\
-Our app could be one target such a person runs into. The difference to any article they read is that form our app, this people will get a unfiltered non biased but accessible of browsing through these reports. They look at the single reports themselves and decide if they think this is a trusty source or not. \\
+Our app could be one target such a person runs into. The difference to any article they read is that from our app people will get a unfiltered non biased but accessible view on this UFO sightings. They look at the single reports themselves and decide if they think this is a trusty source or not. \\
 
 \newpage
 
 \begin{wrapfigure}{r}{0.7\textwidth} 
     \centering
     \includegraphics[width=0.4\textwidth]{Tennesee}
-    \caption{Legend of the East Coast USA glyph}
+    \caption{Tennesee}
     \label{fig:Tennesee}
 \end{wrapfigure}
 
@@ -170,19 +169,19 @@ It could also be seen as a tool for scientific research or myth busting. Taking 
 They want to find proper and scientific bullet proof explanations for happenings. So do we! Always keep in mind it's easy to say that people haven't seen what they claim they did, but it's also possible that their interpretation is simply wrong.
 
 So let's say someone tells you he has see something weird in October 2014 near Nashville. You can double check with our app
-if there is someone else that has seen the same phenomena. If yes might be worth spending some more time to Actually find out
-what has happened that in this area.\\
+if there is someone else that has seen the same phenomena. If yes might be worth spending some more time to actually find out
+what has happened in this area.\\
 
 \begin{wrapfigure}{r}{0.7\textwidth} 
     \centering
     \includegraphics[width=0.4\textwidth]{funnyFindings}
-    \caption{Legend of the East Coast USA glyph}
+    \caption{Funny Findings}
     \label{fig:funnyFindings}
 \end{wrapfigure}
 
 If you neither want to bust some myths nor you are open to conspiracy theories, 
 you might use our app as we do. Click through the reports, look for the really 
-stupid ones and read them loud to your friends. Like ones you can see in figure \ref{fig:funnyFindings}.
- Why? Because they are funny! Actually this is what this project is really about, "fun".
+stupid ones and read them loud to your friends. Like the ones you can see in figure \ref{fig:funnyFindings}.
+Why? Because they are funny! Actually this is what this project is really about, "fun".
 
 \end{document}
