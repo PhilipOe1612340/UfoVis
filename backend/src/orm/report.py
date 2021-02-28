@@ -11,7 +11,7 @@ class Report(Base):
     __tablename__ = 'report'
     id = Column(Integer, primary_key=True)
     shape = Column(String)
-    duration = Column(Integer)
+    duration = Column(String)
     description = Column(Text)
     date = Column(Date)
     point = Column(Geography('POINT'))
